@@ -22,7 +22,6 @@ for degree = 0:deg_res:(floor(90/deg_res)*deg_res)
         elseif mic == 3
             mic3_delay = filter(hdfrac, filter(hdint, mic3));
         elseif mic == 4
-        
             mic4_delay = filter(hdfrac, filter(hdint, mic4));
         end
     end
@@ -36,4 +35,4 @@ for degree = 0:deg_res:(floor(90/deg_res)*deg_res)
 end
 clear delay1 delay2 delay3 ints fracs dfrac hdfrac hdint average counter
 clear total micSep mic_sum degree i mic mic1_delay mic2_delay mic3_delay
-clear tout
+clear tout mic4_delay
