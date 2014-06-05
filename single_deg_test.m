@@ -1,39 +1,23 @@
-sim mic_input 
-num_mics = 4;
-micSep = .1;
-degree = 40;
-delay = calcDelay(degree, micSep, 44100, 345);
-delay1 = delay*(num_mics - 1);
-delay2 = delay*(num_mics - 2);
-delay3 = delay*(num_mics - 3);
-ints = [floor(delay1) floor(delay2) floor(delay3)];
-fracs = [delay1-ints(1) delay2-ints(2) delay3-ints(3)];
-for mic = 1:(num_mics - 1)
-    dfrac = fdesign.fracdelay(fracs(mic));
+sim mic_input_2source
+signals = [mic1 mic2 mic3 mic4 mic5];   
+num_mics = 5;
+micSep = .2; %Separation between microphones
+degree = 60;
+signal_sum = zeros(1,length(mic5));
+for mic = 1:num_mics-1 %assumes sound hits mic1 first
+    delay = calcDelay(degree, micSep, 44100, 345)*(num_mics - mic);
+    hdint = dfilt.delay(floor(delay));%integer delay filter
+    dfrac = fdesign.fracdelay(delay-floor(delay));%fractional delay
     hdfrac = design(dfrac,'lagrange','filterstructure','farrowfd');
-    hdint = dfilt.delay(ints(mic));
-    if mic == 1
-        mic1_delay = filter(hdfrac, filter(hdint, mic1));
-    elseif mic == 2
-        mic2_delay = filter(hdfrac, filter(hdint, mic2));
-    elseif mic == 3
-        mic3_delay = filter(hdfrac, filter(hdint, mic3));
+    mic_delayed = filter(hdfrac, filter(hdint, signals(1:end,mic)));
+    for i = 1:length(mic5)
+        signal_sum(i) = signal_sum(i) + mic_delayed(i);
     end
 end
-mic_sum = zeros(1,length(mic4));
-for i = 1:length(mic4) %summing signals
-    mic_sum(i) = mic1_delay(i)+mic2_delay(i)+mic3_delay(i)+mic4(i);
+for i = 1:length(mic5)
+    signal_sum(i) = signal_sum(i) + mic5(i);
 end
-total = 0;
-counter = 0;
-for i=1:length(mic_sum) %finds average intensity of summed signal
-    if mic_sum(i) ~= 0
-        total = total + abs(mic_sum(i));
-        counter = counter + 1;
-    end
-end
-average = total/counter;
-disp(average)
-clear delay1 delay2 delay3 ints fracs dfrac hdfrac hdint average counter
-clear total micSep mic_sum degree i mic mic1_delay mic2_delay mic3_delay
-clear tout
+power_lvl = bandpower(signal_sum,44100,[200,20000]);
+disp(degree)
+clear degree mic_sum delay hdint dfrac hdfrac mic_delayed 
+clear i mic mic1 mic2 mic3 mic4 mic5 tout signal_sum
