@@ -4,7 +4,7 @@ theta_rads = degtorad(theta);
 sampTime = 1/sampRate;
 [row1,col1] = find(mics == mic1);
 [row2,col2] = find(mics == mic2);
-if phi~=90
+if phi~=0
     if (row1==row2) && (col1~=col2)
         [dist,angle] = findDist(row1,col1,row2,col2,micSep);
         v = speed*sin(phi_rads)*sin(theta_rads+angle);
