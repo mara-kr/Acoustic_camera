@@ -10,7 +10,7 @@ if p~=0
     if (row1==row2) && (col1~=col2)
         netDist = dist*sin(theta_rads)*sin(phi_rads);
     elseif (row1~=row2) && (col1~=col2)
-        netDist = dist*sin(phi_rads)*(theta_rads);
+        netDist = dist*sin(phi_rads)*sin(theta_rads);
     else %sameCol
         netDist = dist*sin(phi_rads)*cos(theta_rads);
     end

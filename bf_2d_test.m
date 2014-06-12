@@ -27,8 +27,8 @@ for phi = -90+deg_res:deg_res:90-deg_res%excludes phi=-90
                     mics = mic_array;
                     last = mics(1,end);
                 elseif th>90 && phi>0
-                    mics = mic_array;
-                    last = mics(end,end);
+                     mics = mic_array;
+                    last = mics(end,end);    
                 end
                 for j = 1:numel(mics)%number of mics of interest
                     mic = mics(j);
@@ -70,7 +70,7 @@ for phi = -90+deg_res:deg_res:90-deg_res%excludes phi=-90
             tind = th/deg_res; %theta adjust to index into array
             power_lvls(pind,tind)=bandpower(signalSum,sampR,[200,20000]);
         end
-    else
+    elseif phi==0
         signalSum = zeros(1,length(mic1));
         for mic=1:num_mics
             for i=1:length(mic1)
@@ -82,5 +82,24 @@ for phi = -90+deg_res:deg_res:90-deg_res%excludes phi=-90
         end
     end
 end
+[rows,cols] = size(power_lvls);
+averaged = power_lvls;
+sum=0;
+average=0;
+for row=1:rows
+    for col=1:cols
+        average = average + averaged(row,col)/(rows*cols);
+    end
+end
+for row=1:rows
+    for col=1:cols
+        if averaged(row,col) < average
+            averaged(row,col) = 0;
+        else
+            averaged(row,col) = averaged(row,col) - average;
+        end
+    end
+end
+
 clear dfrac hdfrac hdint delay i last mic micDelayed mics phi th signals
 clear signalSum tout v sampR micSep mic1 mic2 mic3 mic4 pind tind j
