@@ -1,11 +1,11 @@
 sim mic_input_2d
-mic_array = [4 3; 2 1];
-signals = [mic4,mic2,mic3,mic1];
+mic_array = [1 2; 3 4];
+signals = [mic1,mic3,mic2,mic4];
 num_mics = 4;
 micSep = .1;
 deg_res = 5; %Change to change resolution, MUST use factors of 90,180
 sampR = 44100; %sampling rate
-v = 345; %speed of sound
+v = 344.1892; %speed of sound
 power_lvls = zeros(floor(180/deg_res)-1, floor(180/deg_res)-1);
 assert(90/deg_res == floor(90/deg_res))
 
