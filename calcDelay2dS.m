@@ -1,7 +1,7 @@
 function [numSamples] = calcDelay2dS(p,t,mics,mic1,mic2,fs,v,micSep)
 %CalcDelay based on spherical cords formula
 %   At any given point, the sound plane is tangent to a sphere centered
-%   at the origin. This plane includes mic1.
+%   at the origin. This plane includes variable mic1.
 p_rads = degtorad(p);%p-phi
 t_rads = degtorad(t);%t-theta
 sampTime = 1/fs;
