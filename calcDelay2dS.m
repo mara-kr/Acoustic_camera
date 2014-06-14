@@ -1,19 +1,29 @@
 function [numSamples] = calcDelay2dS(p,t,mics,mic1,mic2,fs,v,micSep)
 %CalcDelay based on spherical cords formula
 %   At any given point, the sound plane is tangent to a sphere centered
-%   at the origin. This plane includes variable mic1.
-p_rads = degtorad(p);%p-phi
-t_rads = degtorad(t);%t-theta
+%   at the origin. This plane includes variable mic1. THis finds the 
+%	perpinduclar distance (which is the shortest distance) from the 
+%	plane to variable mic2. The mic array is in the xy plane.
+p_rads = degtorad(p);%p-phi - angle from the +y-axis
+t_rads = degtorad(t);%t-theta - angle +x-axis. t=90:+z-axis
 sampTime = 1/fs;
 [row1,col1] = find(mics == mic1);
 [row2,col2] = find(mics == mic2);
-dx = abs(col1-col2)*micSep;%only care about absolute distance
-dy = abs(row1-row2)*micSep;
-f = sin(p_rads)*cos(t_rads);%normal vector to plane is (f,g,h)
-g = sin(p_rads)*sin(t_rads);
-h = cos(p_rads);
-dist = (abs(f*dx + g*dy + h))/(f^2 + g^2 + h^2);%dist from pt to plane formula
+dx = (col1-col2)*micSep;
+dy =(row1-row2)*micSep;
+a = sin(p_rads)*cos(t_rads);%x-component of normal vector
+b = cos(p_rads);%y-component of normal vector
+if a < .0000001%for cos(90)/sin(0) - 1e-7
+	a = 0;
+end
+if b < .0000001
+	b = 0;
+end
+dist = abs(a*dx + b*dy);%dist from pt to plane-simplified
 time = dist/v;
 numSamples = time/sampTime;
+if numSamples < .0000001%1e-7
+	numSamples = 0;
+end
 end
 
