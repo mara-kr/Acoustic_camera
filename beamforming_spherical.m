@@ -1,8 +1,8 @@
-%sim mic_input_2d
+sim mic_input_2d
 %mics oriented the way they look facing them
-mics = [1 2 3;6 5 4];%bug with mics=[1 2;6 5]
-signals = [mic1 mic6 mic2,mic5,mic3,mic4];
-micSep = .19;
+mics = [2,1;4,3];%bug with mics=[1 2;6 5]
+signals = [mic2 mic4 mic1,mic3];
+micSep = .222;
 degRes = 5; %Change to change resolution, MUST use factors of 90,180
 fs = 44100; %sampling frequency
 v = 344.2; %speed of sound
@@ -57,14 +57,17 @@ for row=1:rows
     end
 end
 avg = total/(rows*cols);
+powerLvlsAvg = powerLvls;
 for row=1:rows
     for col=1:cols
-        if powerLvls(row,col)>avg
-            powerLvls(row,col) = powerLvls(row,col)-avg;
+        if powerLvlsAvg(row,col)>avg
+            powerLvlsAvg(row,col) = powerLvlsAvg(row,col)-avg;
         else
-            powerLvls(row,col) = 0;
+            powerLvlsAvg(row,col) = 0;
         end
     end
 end
+
+[row,col] = find(max(max(powerLvls))==powerLvls);
 clear delay fs i j last mic micSep mics p t signalSum signals micDelayed
-clear hdint degRes row rows col cols total tout v
+clear hdint degRes rows cols total tout v
