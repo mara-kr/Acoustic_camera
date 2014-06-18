@@ -1,10 +1,10 @@
-sim mic_input_2d
+%sim mic_input_2d
 %mics oriented the way they look facing them
-mics = [2,1;4,3];%bug with mics=[1 2;6 5]
+mics = [2 1;4 3];%bug with mics=[1 2;6 5]
 signals = [mic2 mic4 mic1,mic3];
 micSep = .222;
 degRes = 5; %Change to change resolution, MUST use factors of 90,180
-fs = 44100; %sampling frequency
+fs = 96000; %sampling frequency
 v = 344.2; %speed of sound
 powerLvls = zeros(floor(180/degRes)-1, floor(180/degRes)-1)-1;
 assert(90/degRes == floor(90/degRes))
@@ -36,7 +36,8 @@ for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
             mic = mics(j);
             if mic~=last
                 delay = calcDelay2dS(p,t,mics,mic,last,fs,v,micSep);
-                micDelayed = fracFilter(signals(1:end,j),delay);
+                hdint = dfilt.delay(floor(delay));
+                micDelayed = filter(hdint,signals(1:end,j));
             else
                 micDelayed = signals(1:end,j);%mic & signal at same index
             end
@@ -67,7 +68,7 @@ for row=1:rows
         end
     end
 end
-
+clear row col
 [row,col] = find(max(max(powerLvls))==powerLvls);
 clear delay fs i j last mic micSep mics p t signalSum signals micDelayed
 clear hdint degRes rows cols total tout v
