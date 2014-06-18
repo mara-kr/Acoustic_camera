@@ -1,20 +1,21 @@
 %sim mic_input_2d
 %mics oriented the way they look facing them
-mics = [2 1;4 3];%bug with mics=[1 2;6 5]
-signals = [mic2 mic4 mic1,mic3];
-micSep = .222;
+mics = [1 2 3;6 5 4];
+signals = [mic1 mic6 mic2 mic5 mic3 mic4];
+micSep = .19;
 degRes = 5; %Change to change resolution, MUST use factors of 90,180
-fs = 96000; %sampling frequency
+fs = 44100; %sampling frequency
 v = 344.2; %speed of sound
 powerLvls = zeros(floor(180/degRes)-1, floor(180/degRes)-1)-1;
 assert(90/degRes == floor(90/degRes))
+sampLength = length(mic1);%how many samples each signal is
 
 for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
-    if (p/10)==floor(p/10)%to show progress
+    if (p/30)==floor(p/30)%to show progress
         disp(p)
     end
     for t=0+degRes:degRes:180-degRes%t-theta
-        signalSum = zeros(1,length(mic1));
+        signalSum = zeros(length(mic1),1);
         if t<90 && p<90
             last = mics(end,1);%which mic sound hits last
         elseif t<90 && p>90
@@ -35,17 +36,16 @@ for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
         for j = 1:numel(mics)
             mic = mics(j);
             if mic~=last
-                delay = calcDelay2dS(p,t,mics,mic,last,fs,v,micSep);
-                hdint = dfilt.delay(floor(delay));
-                micDelayed = filter(hdint,signals(1:end,j));
+                delay = floor(calcDelay2dS(p,t,mics,mic,last,fs,v,micSep));
+                silence = zeros(delay,1);
+                micDelaySilence = [silence;signals(1:end,j)];
+                micDelayed = micDelaySilence(1:sampLength,1);
             else
                 micDelayed = signals(1:end,j);%mic & signal at same index
             end
-            for i=1:length(mic1)
-                signalSum(i)=signalSum(i)+micDelayed(i);
-            end
+            signalSum = signalSum + micDelayed;
         end
-        powerLvls(p/degRes,t/degRes)=bandpower(signalSum,fs,[200,20000]);
+        powerLvls(p/degRes,t/degRes) = bandpower(signalSum,fs,[200,20000]);
     end
 end
 
@@ -71,4 +71,4 @@ end
 clear row col
 [row,col] = find(max(max(powerLvls))==powerLvls);
 clear delay fs i j last mic micSep mics p t signalSum signals micDelayed
-clear hdint degRes rows cols total tout v
+clear degRes rows cols total tout v micDelaySilence sampLength silence
