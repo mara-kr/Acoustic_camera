@@ -3,17 +3,17 @@
 mics = [1 2 3;6 5 4];
 signals = [mic1 mic6 mic2 mic5 mic3 mic4];
 micSep = .19;
-degRes = 5; %Change to change resolution, MUST use factors of 90,180
+degRes = 3; %Change to change resolution, MUST use factors of 90,180
 fs = 44100; %sampling frequency
-v = 344.2; %speed of sound
+v = round(speedSound(71,'m/s')); %speed of sound
 powerLvls = zeros(floor(180/degRes)-1, floor(180/degRes)-1)-1;
 assert(90/degRes == floor(90/degRes))
 sampLength = length(mic1);%how many samples each signal is
 
 for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
-    if (p/30)==floor(p/30)%to show progress
-        disp(p)
-    end
+%     if (p/30)==floor(p/30)%to show progress
+%         disp(p)
+%     end
     for t=0+degRes:degRes:180-degRes%t-theta
         signalSum = zeros(length(mic1),1);
         if t<90 && p<90
@@ -36,28 +36,23 @@ for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
         for j = 1:numel(mics)
             mic = mics(j);
             if mic~=last
-                delay = floor(calcDelay2dS(p,t,mics,mic,last,fs,v,micSep));
+                delay = calcDelay2dS(p,t,mics,mic,last,fs,v,micSep);
                 silence = zeros(delay,1);
                 micDelaySilence = [silence;signals(1:end,j)];
                 micDelayed = micDelaySilence(1:sampLength,1);
+                clear micDelaySilence silence delay
             else
                 micDelayed = signals(1:end,j);%mic & signal at same index
             end
             signalSum = signalSum + micDelayed;
         end
-        powerLvls(p/degRes,t/degRes) = bandpower(signalSum,fs,[200,20000]);
+        powerLvls(p/degRes,t/degRes) = bandpower(signalSum,fs,[800,20000]);
     end
 end
 
 %Removes average from every point
 [rows,cols]=size(powerLvls);
-total = 0;
-for row=1:rows
-    for col=1:cols
-        total = total + powerLvls(row,col);
-    end
-end
-avg = total/(rows*cols);
+avg = (sum(sum(powerLvls)))/(rows*cols);
 powerLvlsAvg = powerLvls;
 for row=1:rows
     for col=1:cols

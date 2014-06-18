@@ -9,11 +9,11 @@ t_rads = degtorad(t);%t-theta - angle +x-axis. t=90:+z-axis
 sampTime = 1/fs;
 [row1,col1] = find(mics == mic1);
 [row2,col2] = find(mics == mic2);
-dx = ((col1-col2)*micSep);
-dy = ((row1-row2)*micSep);
-a = (sin(p_rads)*cos(t_rads));%x-component of normal vector
-b = (cos(p_rads));%y-component of normal vector
+dx = (col1-col2)*micSep;
+dy = (row1-row2)*micSep;
+a = sin(p_rads)*cos(t_rads);%x-component of normal vector
+b = cos(p_rads);%y-component of normal vector
 dist = abs(a*dx + b*dy);%dist from pt to plane-simplified
 time = dist/v;
-numSamples = time/sampTime;
+numSamples = round(time/sampTime);
 end

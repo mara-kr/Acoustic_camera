@@ -1,4 +1,4 @@
-function [speed] = speedOfSound(temp, units)
+function [speed] = speedSound(temp, units)
 %speedOfSound has units as string, ie m/s
 assert(isnumeric(temp))
 degC = (temp-32)/1.8;
