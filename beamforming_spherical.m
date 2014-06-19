@@ -3,7 +3,7 @@
 mics = [1 2 3;6 5 4];
 signals = [mic1 mic6 mic2 mic5 mic3 mic4];
 micSep = .19;
-degRes = 3; %Change to change resolution, MUST use factors of 90,180
+degRes = 5; %Change to change resolution, MUST use factors of 90,180
 fs = 44100; %sampling frequency
 v = round(speedSound(71,'m/s')); %speed of sound
 powerLvls = zeros(floor(180/degRes)-1, floor(180/degRes)-1)-1;
@@ -46,7 +46,9 @@ for p=0+degRes:degRes:180-degRes%p-phi, skips 0,180
             end
             signalSum = signalSum + micDelayed;
         end
-        powerLvls(p/degRes,t/degRes) = bandpower(signalSum,fs,[800,20000]);
+%         powerLvls(p/degRes,t/degRes) = signalSum(floor(sampLength/4)+100);
+        powerLvls(p/degRes,t/degRes) = bandpower(signalSum);
+        %had bandpower(signalSum,fs,[800,20000])
     end
 end
 
