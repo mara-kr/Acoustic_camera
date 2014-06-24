@@ -22,7 +22,7 @@ function varargout = micDataWarning(varargin)
 
 % Edit the above text to modify the response to help micDataWarning
 
-% Last Modified by GUIDE v2.5 23-Jun-2014 15:41:50
+% Last Modified by GUIDE v2.5 24-Jun-2014 09:29:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,7 +56,6 @@ function micDataWarning_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for micDataWarning
 handles.output = hObject;
 handles.yes = 0;
-handles.no = 0;
 % Update handles structure
 guidata(hObject, handles);
 disp(handles)
@@ -101,9 +100,9 @@ function yesPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.yes = 1;
-guidata(hObject,handles)
+response = handles.yes;
+save('micDataWarning.mat','response')
 close(gcf)
-disp(handles)
 
 
 % --- Executes on button press in noPb.
@@ -111,7 +110,8 @@ function noPb_Callback(hObject, eventdata, handles)
 % hObject    handle to noPb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.no = 1;
+handles.yes = 0;
 guidata(hObject,handles)
+response = handles.yes;
+save('micDataWarning.mat','response')
 close(gcf)
-disp(handles)

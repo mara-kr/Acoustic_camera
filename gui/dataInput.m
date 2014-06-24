@@ -76,8 +76,6 @@ varargout{1} = handles.output;
 
 
 function micSep_Callback(hObject, eventdata, handles)
-% hObject    handle to micSep (see GCBO)
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.micSep = val;
@@ -86,13 +84,8 @@ else
     error('Input must be an integer')
 end
 
-% --- Executes during object creation, after setting all properties.
-function micSep_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to micSep (see GCBO)
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
+function micSep_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -100,9 +93,6 @@ end
 
 
 function temp_Callback(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.temp = val;
@@ -112,24 +102,13 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function temp_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to temp (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-
 function fs_Callback(hObject, eventdata, handles)
-% hObject    handle to fs (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.fs = val;
@@ -139,14 +118,7 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function fs_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to fs (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -154,9 +126,6 @@ end
 
 
 function arrayWidth_Callback(hObject, eventdata, handles)
-% hObject    handle to arrayWidth (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.arrayWidth = val;
@@ -166,14 +135,7 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function arrayWidth_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to arrayWidth (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -181,9 +143,6 @@ end
 
 
 function arrayHeight_Callback(hObject, eventdata, handles)
-% hObject    handle to arrayHeight (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.arrayHeight = val;
@@ -193,14 +152,7 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function arrayHeight_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to arrayHeight (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -208,9 +160,6 @@ end
 
 
 function x0_Callback(hObject, eventdata, handles)
-% hObject    handle to x0 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.x0 = val;
@@ -220,15 +169,7 @@ else
 end
 
 
-
-% --- Executes during object creation, after setting all properties.
 function x0_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to x0 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -236,9 +177,6 @@ end
 
 
 function yo_Callback(hObject, eventdata, handles)
-% hObject    handle to yo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.y0 = val;
@@ -248,14 +186,7 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function yo_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to yo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -263,9 +194,6 @@ end
 
 
 function z0_Callback(hObject, eventdata, handles)
-% hObject    handle to z0 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.z0 = val;
@@ -274,15 +202,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function z0_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to z0 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -290,9 +210,6 @@ end
 
 
 function x1_Callback(hObject, eventdata, handles)
-% hObject    handle to x1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.x1 = val;
@@ -301,15 +218,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function x1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to x1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -317,9 +226,6 @@ end
 
 
 function y1_Callback(hObject, eventdata, handles)
-% hObject    handle to y1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.y1 = val;
@@ -328,15 +234,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function y1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to y1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -344,9 +242,6 @@ end
 
 
 function z1_Callback(hObject, eventdata, handles)
-% hObject    handle to z1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.z1 = val;
@@ -355,25 +250,13 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function z1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to z1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-
 function xa_Callback(hObject, eventdata, handles)
-% hObject    handle to xa (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.xa = val;
@@ -383,24 +266,13 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function xa_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to xa (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-
 function ya_Callback(hObject, eventdata, handles)
-% hObject    handle to ya (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.ya = val;
@@ -410,24 +282,13 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
 function ya_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to ya (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-
 function za_Callback(hObject, eventdata, handles)
-% hObject    handle to za (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.za = val;
@@ -436,15 +297,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function za_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to za (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -452,9 +305,6 @@ end
 
 
 function xres_Callback(hObject, eventdata, handles)
-% hObject    handle to xres (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.xres = val;
@@ -463,15 +313,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function xres_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to xres (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -479,9 +321,6 @@ end
 
 
 function yres_Callback(hObject, eventdata, handles)
-% hObject    handle to yres (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
     handles.yres = val;
@@ -490,15 +329,7 @@ else
     error('Input must be an integer')
 end
 
-
-% --- Executes during object creation, after setting all properties.
 function yres_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to yres (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -506,9 +337,6 @@ end
 
 % --- Executes on button press in nextButton.
 function nextButton_Callback(hObject, eventdata, handles)
-% hObject    handle to nextButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 x = handles;
 save('handles.mat','x')
 disp(handles)
@@ -516,11 +344,26 @@ disp(handles)
 
 % --- Executes on button press in ldMicData.
 function ldMicData_Callback(hObject, eventdata, handles)
-% hObject    handle to ldMicData (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[fname,path] = uigetfile('.mat');
-han
+open('micDataWarning.fig')
+uiwait(gcf)
+cd = pwd;
+ld = load(strcat(cd,'\','micDataWarning.mat'));
+delete(strcat(cd,'\','micDataWarning.mat'))
+if ld.response==1
+    %signals array variable should be called signals!
+    [fname,path] = uigetfile('.mat');
+    ld = load(strcat(path,fname));
+    handles.signals = ld.signals;
+else
+    %if isnumeric('handles.arrayWidth')
+    numMic = handles.arrayWidth*handles.arrayHeight;
+    handles.signals = selectMicData(numMic);
+    %else
+    %    error('Must set Array Width and Height before creating mic data!')
+    %end
+end
+guidata(hObject,handles)
+
 
 
 
