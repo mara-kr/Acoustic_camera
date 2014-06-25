@@ -3,7 +3,7 @@
 pCoords = [0 0 96; 200 200 96];%(x1,y1,z1;x2,y2,z2) opp corners
 assert(pCoords(1,3)==pCoords(2,3))
 zp = pCoords(1,3);
-signals = [mic6 mic5 mic4 mic1 mic2 mic3];%each mic signal is col vector
+signals = [mic4 mic5 mic6 mic3 mic2 mic1];%each mic signal is col vector
 xres = 5;
 yres = 5;
 micSep = 8; %in inches
