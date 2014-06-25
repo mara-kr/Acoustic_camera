@@ -4,3 +4,4 @@ rads = degtorad(degrees);
 sampTime = 1/sampRate;
 timeDelay = micSeparate*cos(rads)/soundSpeed;
 numSamples = timeDelay/sampTime;
+end

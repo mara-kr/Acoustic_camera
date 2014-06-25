@@ -13,7 +13,6 @@ xa = 90;%x coord of bot-left array corner
 ya = 90;%y coord of bot-left array corner
 za = 0;%z coordinate of the array
 fs = 44100;%sampling rate
-%frange = [800,20000];%low range,high range
 
 vs = speedSound(71,'in/s');%71 is room temp
 sampLength = length(mic1); 
