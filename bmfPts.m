@@ -1,19 +1,25 @@
 function [powerLvls,powerLvlsAvg,row,col] = bmfPts(pCrds,signals,res,...
                                               micSep,aDims,aCrds,fs,temp)
-%Beamforming_points beamformes signals based on point in space
-%   res = [xres,yres] aDims = [arrayWidth,arrayHeight]
-%   pCrds = plane Coordinates = [x1,y1,z1;x2,y2,z2] - opp corners
-%   aCrds = array Coordinates = [xa,ya,za] - bottom left (facing) mic crds
+%BmfPts beamformes signals based on point in space
+%   BL == bottom Left, TR == Top right, when facing source
+%   res = [xres,yres] - determines how often points are sampled(resolution)
+%   pCrds = plane Coordinates = [x1,y1,z1;x2,y2,z2] - opp corners(BL-TR)
+%   aCrds = array Coordinates = [xa,ya,za] - BL mic crds
 %   fs - sampling frequency
-%   temp - room temperature in F
+%   temp - room temperature in F, needed for speed of sound calculation
 %   signals - array of mic signals ordered from bottom left to top right
-%   aDims - [arrayWidth,arrayHeight]
+%   aDims - [arrayWidth,arrayHeight] - Width and height of array in # mics
+%   powerLvls - the baseline array of points and power levels
+%   powerLvlsAvg - powerLvls with the average removed from every point
+%   [row,col] describes the point with the maximum power level
+%   UNITS == INCHES BY DEFAULT. TO SWITCH TO ANOTHER UNIT, CHANGE LINE 22
+%   mCoords - array of the coordinates of mics; mCoords(1)=mic1, etc
 xres = res(1);
 yres = res(2);
 zp = pCrds(1,3);
 arrayWidth = aDims(1);
 arrayHeight = aDims(2);
-vs = speedSound(temp,'in/s');%71 is room temp
+vs = speedSound(temp,'in/s');
 numMics = arrayWidth*arrayHeight;
 xa = aCrds(1);
 ya = aCrds(2);
@@ -21,11 +27,12 @@ za = aCrds(3);
 sampLength = length(signals(:,1));
 mCrds = zeros(numMics,3);%coordinates of each mic
 
+%creates size of powerLvls array, so it doesn't keep changing size
 plx = (pCrds(end,1)-pCrds(1,1))/xres + 1;
 ply = (pCrds(end,2)-pCrds(1,2))/yres + 1;
 assert(floor(plx)==plx)%iterating through x should hit start and end
 assert(floor(ply)==ply)%iterating through y should hit start and end
-powerLvls = zeros(ply,plx);%rows are y, cols are x (line 56 as well)
+powerLvls = zeros(ply,plx);%rows are y, cols are x (line 63 as well)
 assert(pCrds(1,3)==pCrds(2,3))
 assert(xa>pCrds(1,1) && xa<pCrds(end,1))%mic array must be inside plane
 assert(ya>pCrds(1,2) && ya<pCrds(end,2))
@@ -40,7 +47,7 @@ end
 xmid = (mCrds(1,1)+mCrds(end,1))/2;
 ymid = (mCrds(1,2)+mCrds(end,2))/2;
 zmid = za;
-midCrds = [xmid,ymid,zmid];%middle of mic array coords
+midCrds = [xmid,ymid,zmid];%middle of mic array coordinates
 
 for xp=pCrds(1,1):xres:pCrds(end,1)
     for yp=pCrds(1,2):yres:pCrds(end,2)

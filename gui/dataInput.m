@@ -1,3 +1,4 @@
+%See bmfPts.m for documentation on variable meanings!
 function varargout = dataInput(varargin)
 %DATAINPUT M-file for dataInput.fig
 %      DATAINPUT, by itself, creates a new DATAINPUT or raises the existing
@@ -22,7 +23,7 @@ function varargout = dataInput(varargin)
 
 % Edit the above text to modify the response to help dataInput
 
-% Last Modified by GUIDE v2.5 23-Jun-2014 15:25:14
+% Last Modified by GUIDE v2.5 25-Jun-2014 15:17:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -337,9 +338,16 @@ end
 
 % --- Executes on button press in nextButton.
 function nextButton_Callback(hObject, eventdata, handles)
-x = handles;
-save('handles.mat','x')
+handles.pCrds = [handles.x0,handles.y0,handles.z0;...
+                 handles.x1,handles.y1,handles.z1];
+handles.aCrds = [handles.xa,handles.ya,handles.za];
+handles.aDims = [handles.arrayWidth,handles.arrayHeight];
+handles.res = [handles.xres,handles.yres];
+guidata(hObject,handles)
 disp(handles)
+save('handles.mat','handles')
+close(gcf)
+graphAnalysis
 
 
 % --- Executes on button press in ldMicData.
@@ -363,6 +371,41 @@ else
     %end
 end
 guidata(hObject,handles)
+
+
+% --- Executes on button press in savePb.
+function savePb_Callback(hObject, eventdata, handles)%saves in working dir
+% hObject    handle to savePb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+state.x0 = handles.x0;
+state.y0 = handles.y0;
+state.z0 = handles.z0;
+state.x1 = handles.x1;
+state.y1 = handles.y1;
+state.z1 = handles.z1;
+state.micSep = handles.micSep;
+state.temp = handles.temp;
+state.fs = handles.fs;
+state.arrayWidth = handles.arrayWidth;
+state.arrayHeight = handles.arrayHeight;
+state.xres = handles.xres;
+state.yres = handles.yres;
+state.xa = handles.xa;
+state.ya = handles.ya;
+state.za = handles.za;
+state.signals = handles.signals; %#ok<STRNU>
+fname = inputdlg('Enter filename','Save State');
+save(strcat(fname{1},'.mat'),'state')
+
+
+% --- Executes on button press in loadPb.
+function loadPb_Callback(hObject, eventdata, handles)
+% hObject    handle to loadPb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[fname,path] = uigetfile('.mat');
+old = load(strcat(path,fname));
 
 
 
