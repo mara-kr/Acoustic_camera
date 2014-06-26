@@ -3,6 +3,7 @@ function [m] = bmfPtsMovie(pCrds,signals,res,micSep,aDims,aCrds,fs,...
 %bmfPtsMovie creates a movie with each frame using frameLength samples
 %   Detailed explanation goes here
 nFrames = ceil(length(signals(:,1))/frameLength);
+m = struct('cdata', cell(1,nFrames), 'colormap', cell(1,nFrames));
 h = figure('Renderer','zbuffer','NextPlot','replacechildren',...
        'Units','pixels','Position',[100,100,800,700]);
 fprintf('1 frame out of %d\n',nFrames)
@@ -22,7 +23,7 @@ for i = 2:nFrames
     [~,avg] = bmfPts(pCrds,data,res,micSep,aDims,aCrds,fs,temp);
     surf(avg)
     zlim([0,.12])
-    m(i) = getframe(h); %#ok<AGROW>
+    m(i) = getframe(h);
 end
 close all
 end
