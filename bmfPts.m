@@ -83,8 +83,8 @@ end
 [rows,cols]=size(powerLvls);
 avg = (sum(sum(powerLvls)))/(rows*cols);
 powerLvlsAvg = powerLvls;
-for row=1:rows
-    for col=1:cols
+for col=1:cols
+    for row=1:rows
         if powerLvlsAvg(row,col)>avg
             powerLvlsAvg(row,col) = powerLvlsAvg(row,col)-avg;
         else

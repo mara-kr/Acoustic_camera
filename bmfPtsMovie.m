@@ -4,16 +4,7 @@ function [m] = bmfPtsMovie(pCrds,signals,res,micSep,aDims,aCrds,fs,...
 %   Detailed explanation goes here
 nFrames = ceil(length(signals(:,1))/frameLength);
 m = struct('cdata', cell(1,nFrames), 'colormap', cell(1,nFrames));
-h = figure('Renderer','zbuffer','NextPlot','replacechildren',...
-       'Units','pixels','Position',[100,100,800,700]);
-fprintf('1 frame out of %d\n',nFrames)
-firstSig = signals(1:frameLength,:);
-[~,avg] = bmfPts(pCrds,firstSig,res,micSep,aDims,aCrds,fs,temp);
-surf(avg)
-zlim([0,.12]);%arbitraryish. Mostly just needs to be fixed.
-m(1) = getframe(h);
-axis tight
-for i = 2:nFrames
+for  i = 1:nFrames
     fprintf('%d frame out of %d\n',i,nFrames)
     if i~=nFrames
         data = signals(frameLength*(i-1)+1:frameLength*i,:);
@@ -22,9 +13,8 @@ for i = 2:nFrames
     end
     [~,avg] = bmfPts(pCrds,data,res,micSep,aDims,aCrds,fs,temp);
     surf(avg)
-    zlim([0,.12])
-    m(i) = getframe(h);
+    zlim([0,.05])
+    m(i) = getframe;
 end
-close all
 end
 

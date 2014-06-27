@@ -2,7 +2,7 @@ function [signals] = selectMicData(numMics)
 %SelectMicData is a tool for importing mic data into a signals array that
 %    can be passed to beamforming scripts/functions
 %    It's listed elsewhere, but mic1 is the bottom left mic when facing
-%    the array, mic2 is to the right of mic1, and so on. The last mic is
+%    the source, mic2 is to the right of mic1, and so on. The last mic is
 %    the top right mic.
 currentFolder = pwd;%current matlab directory
 disp('Select the signal for the 1st mic!')
@@ -28,13 +28,19 @@ if ischar(fname)
                 signals(:,mic+1) = data;
             else
                 cd(currentFolder)
-                error('Signals must be the same length')
+                errordlg('Signals must be the same length')
+                signals = [];
+                break
             end
+        else
+            signals = [];
+            break
         end
     end
+else
+    signals = [];
 end
 cd(currentFolder)
-if signals(1,end)==0
-    error('Did not select enough mic Data!')
 end
+
 
