@@ -363,18 +363,17 @@ if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
         selection = questdlg(dlg,'Long Signals','Yes','No','No');
         if strcmp(selection,'No')
             return;
-        else
-            handles.pCrds = [handles.x0,handles.y0,handles.z0;...
-                             handles.x1,handles.y1,handles.z1];
-            handles.aCrds = [handles.xa,handles.ya,handles.za];
-            handles.aDims = [handles.arrayWidth,handles.arrayHeight];
-            handles.res = [handles.xres,handles.yres];
-            guidata(hObject,handles)
-            save('handles.mat','handles')
-            close(gcf)
-            graphAnalysis
         end
     end
+    handles.pCrds = [handles.x0,handles.y0,handles.z0;...
+        handles.x1,handles.y1,handles.z1];
+    handles.aCrds = [handles.xa,handles.ya,handles.za];
+    handles.aDims = [handles.arrayWidth,handles.arrayHeight];
+    handles.res = [handles.xres,handles.yres];
+    guidata(hObject,handles)
+    save('handles.mat','handles')
+    close(gcf)
+    graphAnalysis
 elseif isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres'})
@@ -582,18 +581,17 @@ if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
         selection = questdlg(dlg,'Short Signals','Yes','No','No');
         if strcmp(selection,'No')
             return;
-        else
-            handles.pCrds = [handles.x0,handles.y0,handles.z0;...
-                             handles.x1,handles.y1,handles.z1];
-            handles.aCrds = [handles.xa,handles.ya,handles.za];
-            handles.aDims = [handles.arrayWidth,handles.arrayHeight];
-            handles.res = [handles.xres,handles.yres];
-            guidata(hObject,handles)
-            save('handles.mat','handles')
-            close(gcf)
-            movieAnalysis;
         end
     end
+    handles.pCrds = [handles.x0,handles.y0,handles.z0;...
+        handles.x1,handles.y1,handles.z1];
+    handles.aCrds = [handles.xa,handles.ya,handles.za];
+    handles.aDims = [handles.arrayWidth,handles.arrayHeight];
+    handles.res = [handles.xres,handles.yres];
+    guidata(hObject,handles)
+    save('handles.mat','handles')
+    close(gcf)
+    movieAnalysis;
 elseif isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres'})

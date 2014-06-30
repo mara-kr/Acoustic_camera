@@ -27,6 +27,7 @@ for i = 1:nFrames
     zlim([0,.05])
     m(i) = getframe(h);
 end
+    
 close all
 clear aCrds aDims data firstSig frameL fs micSep nFrames pCrds res temp i h
 clear powerlvls avg w

@@ -22,7 +22,7 @@ function varargout = movieAnalysis(varargin)
 
 % Edit the above text to modify the response to help movieAnalysis
 
-% Last Modified by GUIDE v2.5 27-Jun-2014 10:21:32
+% Last Modified by GUIDE v2.5 30-Jun-2014 13:24:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -68,6 +68,7 @@ handles.aCrds = original.handles.aCrds;
 handles.pCrds = original.handles.pCrds;
 handles.signals = original.handles.signals;
 handles.original = original;
+handles.currentFrame = 1;
 guidata(hObject, handles);
 
 % UIWAIT makes movieAnalysis wait for user response (see UIRESUME)
@@ -84,48 +85,7 @@ function varargout = movieAnalysis_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
-% --- Executes on button press in runPb.
-function runPb_Callback(hObject, eventdata, handles) %#ok<*DEFNU>
-% hObject    handle to runPb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-if isfield(handles,{'fps','movie'})
-    movie(handles.movie,1,handles.fps)
-elseif isfield(handles,'fps')
-    errordlg('Need to create the movie before running it!')
-else
-    errordlg('Enter desired frames per second!')
-end
-
-% --- Executes on button press in run2xPb.
-function run2xPb_Callback(hObject, eventdata, handles)
-% hObject    handle to run2xPb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-if isfield(handles,{'fps','movie'})
-    movie(handles.movie,1,handles.fps*2)
-elseif isfield(handles,'fps')
-    errordlg('Need to create the movie before running it!')
-else
-    errordlg('Enter desired frames per second!')
-end
-
-% --- Executes on button press in runHalfSpeedPb.
-function runHalfSpeedPb_Callback(hObject, eventdata, handles)
-% hObject    handle to runHalfSpeedPb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-if isfield(handles,{'fps','movie'})
-    movie(handles.movie,1,handles.fps*.5)
-elseif isfield(handles,'fps')
-    errordlg('Need to create the movie before running it!')
-else
-    errordlg('Enter desired frames per second!')
-end
-
-
-function fpsBox_Callback(hObject, eventdata, handles)
+function fpsBox_Callback(hObject, eventdata, handles) %#ok<*DEFNU>
 % hObject    handle to fpsBox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -174,6 +134,7 @@ function createMovPb_Callback(hObject, eventdata, handles)
 if isfield(handles,'fps')
     h = figure('Renderer','zbuffer','NextPlot','replacechildren',...
         'Units','pixels','Position',[100,100,773,502]);
+    colormap(handles.colormap)
     %width and height come from axes-Outerposition width+5,height-5
     handles.frameLength = round(handles.fs/handles.fps);
     handles.movie = bmfPtsMovie(handles.pCrds,handles.signals,...
@@ -182,6 +143,226 @@ if isfield(handles,'fps')
                                 handles.temp,handles.frameLength);
    guidata(hObject,handles)
    close(h)
+else
+    errordlg('Enter desired frames per second!')
+end
+
+
+% --- Executes on selection change in colormapSelectPopUp.
+function colormapSelectPopUp_Callback(hObject, eventdata, handles)
+% hObject    handle to colormapSelectPopUp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+popupSelIndex = get(hObject,'Value');
+switch popupSelIndex
+    case 1
+        handles.colormap = 'Jet';
+    case 2
+        handles.colormap = 'HSV';
+    case 3
+        handles.colormap = 'Hot';
+    case 4
+        handles.colormap = 'Cool';
+end
+guidata(hObject,handles)
+
+% --- Executes during object creation, after setting all properties.
+function colormapSelectPopUp_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to colormapSelectPopUp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+handles.colormap = 'Jet';
+guidata(hObject,handles)
+
+
+% --- Executes on button press in playToggle.
+function playToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to playToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of playToggle
+if isfield(handles,'fps')
+    nFrames = length(handles.movie);
+    frameTime = 1/handles.fps;
+    if get(hObject,'Value')
+        set(hObject,'String','Pause')
+        set(handles.doubleSpeedToggle,'Enable','off')
+        set(handles.halfSpeedToggle,'Enable','off')
+        set(handles.stopPb,'Enable','off')
+        set(handles.createMovPb,'Enable','off')
+        set(handles.rewindToggle,'Enable','off')
+    else
+        set(hObject,'String','Play')
+        set(handles.doubleSpeedToggle,'Enable','on')
+        set(handles.halfSpeedToggle,'Enable','on')
+        set(handles.stopPb,'Enable','on')
+        set(handles.createMovPb,'Enable','on')
+        set(handles.rewindToggle,'Enable','on')
+    end
+    while get(hObject,'Value') && handles.currentFrame<=nFrames
+        x = frame2im(handles.movie(handles.currentFrame));
+        image(x);
+        time = num2str(frameTime*handles.currentFrame,3);
+        set(handles.timeStamp,'String',time)
+        pause(frameTime)
+        handles.currentFrame = handles.currentFrame+1;
+    end
+    if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
+        handles.currentFrame = 1;
+    end
+    guidata(hObject,handles)
+elseif isfield(handles,'fps')
+    errordlg('Need to create the movie before playing it!')
+else
+    errordlg('Enter desired frames per second!')
+end
+
+
+% --- Executes on button press in doubleSpeedToggle.
+function doubleSpeedToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to doubleSpeedToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of doubleSpeedToggle
+if isfield(handles,'fps')
+    nFrames = length(handles.movie);
+    frameTime = 1/handles.fps;
+    if get(hObject,'Value')
+        set(hObject,'String','Pause')
+        set(handles.playToggle,'Enable','off')
+        set(handles.halfSpeedToggle,'Enable','off')
+        set(handles.stopPb,'Enable','off')
+        set(handles.createMovPb,'Enable','off')
+        set(handles.rewindToggle,'Enable','off')
+    else
+        set(hObject,'String','Play 2x Speed')
+        set(handles.playToggle,'Enable','on')
+        set(handles.halfSpeedToggle,'Enable','on')
+        set(handles.stopPb,'Enable','on')
+        set(handles.createMovPb,'Enable','on')
+        set(handles.rewindToggle,'Enable','on')
+    end
+    while get(hObject,'Value') && handles.currentFrame<=nFrames
+        x = frame2im(handles.movie(handles.currentFrame));
+        image(x);
+        time = num2str(frameTime*handles.currentFrame,3);
+        set(handles.timeStamp,'String',time)
+        pause(frameTime/2)
+        handles.currentFrame = handles.currentFrame+1;
+    end
+    if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
+        handles.currentFrame = 1;
+    end
+    guidata(hObject,handles)
+elseif isfield(handles,'fps')
+    errordlg('Need to create the movie before playing it!')
+else
+    errordlg('Enter desired frames per second!')
+end
+
+% --- Executes on button press in halfSpeedToggle.
+function halfSpeedToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to halfSpeedToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of halfSpeedToggle
+if isfield(handles,'fps')
+    nFrames = length(handles.movie);
+    frameTime = 1/handles.fps;
+    if get(hObject,'Value')
+        set(hObject,'String','Pause')
+        set(handles.playToggle,'Enable','off')
+        set(handles.doubleSpeedToggle,'Enable','off')
+        set(handles.stopPb,'Enable','off')
+        set(handles.createMovPb,'Enable','off')
+        set(handles.rewindToggle,'Enable','off')
+    else
+        set(hObject,'String','Play 1/2 Speed')
+        set(handles.playToggle,'Enable','on')
+        set(handles.doubleSpeedToggle,'Enable','on')
+        set(handles.stopPb,'Enable','on')
+        set(handles.createMovPb,'Enable','on')
+        set(handles.rewindToggle,'Enable','on')
+    end
+    while get(hObject,'Value') && handles.currentFrame<=nFrames
+        x = frame2im(handles.movie(handles.currentFrame));
+        image(x);
+        time = num2str(frameTime*handles.currentFrame,3);
+        set(handles.timeStamp,'String',time)
+        pause(frameTime*2)
+        handles.currentFrame = handles.currentFrame+1;
+    end
+    if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
+        handles.currentFrame = 1;
+    end
+    guidata(hObject,handles)
+elseif isfield(handles,'fps')
+    errordlg('Need to create the movie before playing it!')
+else
+    errordlg('Enter desired frames per second!')
+end
+
+% --- Executes on button press in stopPb.
+function stopPb_Callback(hObject, eventdata, handles)
+% hObject    handle to stopPb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.halfSpeedToggle,'Value',0)
+set(handles.playToggle,'Value',0)
+set(handles.doubleSpeedToggle,'Value',0)
+set(handles.rewindToggle,'Enable','off')
+handles.currentFrame = 1;
+guidata(hObject,handles)
+
+
+% --- Executes on button press in rewindToggle.
+function rewindToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to rewindToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of rewindToggle
+if isfield(handles,'fps')
+    nFrames = length(handles.movie);
+    frameTime = 1/handles.fps;
+    if get(hObject,'Value')
+        set(hObject,'String','Rewinding')
+        set(handles.playToggle,'Enable','off')
+        set(handles.doubleSpeedToggle,'Enable','off')
+        set(handles.stopPb,'Enable','off')
+        set(handles.halfSpeedToggle,'Enable','off')
+        set(handles.createMovPb,'Enable','off')
+    else
+        set(hObject,'String','Rewind')
+        set(handles.playToggle,'Enable','on')
+        set(handles.doubleSpeedToggle,'Enable','on')
+        set(handles.halfSpeedToggle,'Enable','on')
+        set(handles.stopPb,'Enable','on')
+        set(handles.createMovPb,'Enable','on')
+    end
+    while get(hObject,'Value') && handles.currentFrame>1
+        x = frame2im(handles.movie(handles.currentFrame));
+        image(x);
+        time = num2str(frameTime*handles.currentFrame,3);
+        set(handles.timeStamp,'String',time)
+        pause(frameTime)
+        handles.currentFrame = handles.currentFrame-1;
+    end
+    if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
+        handles.currentFrame = 1;
+    end
+    guidata(hObject,handles)
+elseif isfield(handles,'fps')
+    errordlg('Need to create the movie before playing it!')
 else
     errordlg('Enter desired frames per second!')
 end
