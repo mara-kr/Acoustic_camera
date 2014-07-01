@@ -22,7 +22,7 @@ function varargout = graphAnalysis(varargin)
 
 % Edit the above text to modify the response to help graphAnalysis
 
-% Last Modified by GUIDE v2.5 25-Jun-2014 13:18:42
+% Last Modified by GUIDE v2.5 01-Jul-2014 10:45:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -134,7 +134,7 @@ temp = handles.temp;
 [stand,subAvg] = bmfPts(pCrds,signals,res,micSep,aDims,aCrds,fs,temp);
 
 % --- Executes on button press in depthInPb.
-function depthInPb_Callback(hObject, eventdata, handles)
+function depthInPb_Callback(hObject, eventdata, handles) %#ok<*DEFNU>
 % hObject    handle to depthInPb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -158,16 +158,20 @@ function depthDecPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 pause(.1)
-pCrds = handles.pCrds;
-z = pCrds(1,3);
-z = z-5;
-pCrds(1,3) = z;
-pCrds(2,3) = z;
-handles.pCrds = pCrds;
-guidata(hObject,handles)
-[handles.stand,handles.subAvg] = beamform(handles);
-guidata(hObject,handles)
-dataSelectMenu_Callback(hObject,eventdata,handles)
+if handles.aCrds(3) < handles.pCrds(1,3)-5
+    pCrds = handles.pCrds;
+    z = pCrds(1,3);
+    z = z-5;
+    pCrds(1,3) = z;
+    pCrds(2,3) = z;
+    handles.pCrds = pCrds;
+    guidata(hObject,handles)
+    [handles.stand,handles.subAvg] = beamform(handles);
+    guidata(hObject,handles)
+    dataSelectMenu_Callback(hObject,eventdata,handles)
+else
+    errordlg('Plane of interest must be in front of array plane!')
+end
 
 % --- Executes on button press in panRightPb.
 function panRightPb_Callback(hObject, eventdata, handles)
@@ -175,19 +179,23 @@ function panRightPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 pause(.1)
+xa = handles.aCrds(1);
 pCrds = handles.pCrds;
 x0 = pCrds(1,1);
 x1 = pCrds(2,1);
 dx = abs(x0-x1);
 step = floor(dx/10); %change for faster panning
-pCrds(1,1) = x0+step;
-pCrds(2,1) = x1+step;
-handles.pCrds = pCrds;
-guidata(hObject,handles)
-[handles.stand,handles.subAvg] = beamform(handles);
-guidata(hObject,handles)
-dataSelectMenu_Callback(hObject,eventdata,handles)
-
+if xa>(handles.pCrds(1,1)+step) && xa<(handles.pCrds(end,1)+step)
+    pCrds(1,1) = x0+step;
+    pCrds(2,1) = x1+step;
+    handles.pCrds = pCrds;
+    guidata(hObject,handles)
+    [handles.stand,handles.subAvg] = beamform(handles);
+    guidata(hObject,handles)
+    dataSelectMenu_Callback(hObject,eventdata,handles)
+else
+    errordlg('Outside Bound!')
+end
 
 % --- Executes on button press in panDownPb.
 function panDownPb_Callback(hObject, eventdata, handles)
@@ -195,18 +203,23 @@ function panDownPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 pause(.1)
+ya = handles.aCrds(2);
 pCrds = handles.pCrds;
 y0 = pCrds(1,2);
 y1 = pCrds(2,2);
 dy = abs(y0-y1);
 step = floor(dy/10); %change for faster panning
-pCrds(1,2) = y0-step;
-pCrds(2,2) = y1-step;
-handles.pCrds = pCrds;
-guidata(hObject,handles)
-[handles.stand,handles.subAvg] = beamform(handles);
-guidata(hObject,handles)
-dataSelectMenu_Callback(hObject,eventdata,handles)
+if ya>(handles.pCrds(1,2)-step) && ya<(handles.pCrds(end,2)-step)
+    pCrds(1,2) = y0-step;
+    pCrds(2,2) = y1-step;
+    handles.pCrds = pCrds;
+    guidata(hObject,handles)
+    [handles.stand,handles.subAvg] = beamform(handles);
+    guidata(hObject,handles)
+    dataSelectMenu_Callback(hObject,eventdata,handles)
+else
+    errordlg('Outside Bound!')
+end
 
 % --- Executes on button press in panLeftPb.
 function panLeftPb_Callback(hObject, eventdata, handles)
@@ -214,18 +227,23 @@ function panLeftPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 pause(.1)
+xa = handles.aCrds(1);
 pCrds = handles.pCrds;
 x0 = pCrds(1,1);
 x1 = pCrds(2,1);
 dx = abs(x0-x1);
 step = floor(dx/10); %change for faster panning
-pCrds(1,1) = x0-step;
-pCrds(2,1) = x1-step;
-handles.pCrds = pCrds;
-guidata(hObject,handles)
-[handles.stand,handles.subAvg] = beamform(handles);
-guidata(hObject,handles)
-dataSelectMenu_Callback(hObject,eventdata,handles)
+if xa>(handles.pCrds(1,1)-step) && xa<(handles.pCrds(end,1)-step)
+    pCrds(1,1) = x0-step;
+    pCrds(2,1) = x1-step;
+    handles.pCrds = pCrds;
+    guidata(hObject,handles)
+    [handles.stand,handles.subAvg] = beamform(handles);
+    guidata(hObject,handles)
+    dataSelectMenu_Callback(hObject,eventdata,handles)
+else
+    errordlg('Outside Bound!')
+end
 
 % --- Executes on button press in panUpPb.
 function panUpPb_Callback(hObject, eventdata, handles)
@@ -234,17 +252,22 @@ function panUpPb_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 pause(.1)
 pCrds = handles.pCrds;
+ya = handles.aCrds(2);
 y0 = pCrds(1,2);
 y1 = pCrds(2,2);
 dy = abs(y0-y1);
 step = floor(dy/10); %change for faster panning
-pCrds(1,2) = y0+step;
-pCrds(2,2) = y1+step;
-handles.pCrds = pCrds;
-guidata(hObject,handles)
-[handles.stand,handles.subAvg] = beamform(handles);
-guidata(hObject,handles)
-dataSelectMenu_Callback(hObject,eventdata,handles)
+if ya>(handles.pCrds(1,2)+step) && ya<(handles.pCrds(end,2)+step)
+    pCrds(1,2) = y0+step;
+    pCrds(2,2) = y1+step;
+    handles.pCrds = pCrds;
+    guidata(hObject,handles)
+    [handles.stand,handles.subAvg] = beamform(handles);
+    guidata(hObject,handles)
+    dataSelectMenu_Callback(hObject,eventdata,handles)
+else
+    errordlg('Outside Bound!')
+end
 
 
 % --- Executes on button press in resetPb.
@@ -283,12 +306,69 @@ function newDataPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %disp(handles.original.handles)
-selection = questdlg(['Are you sure? This will clear everything.'],...
-                     ['Select new data'],'Yes','No','No');
+selection = questdlg('Are you sure? This will clear everything.',...
+                     'Select new data','Yes','No','No');
 if strcmp(selection,'No')
     return;
 else
     delete(gcf)
     dataInput
+end
+
+
+% --- Executes on selection change in colorSelectPopMenu.
+function colorSelectPopMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to colorSelectPopMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+popupSelIndex = get(hObject,'Value');
+switch popupSelIndex
+    case 1
+        handles.colormap = 'Jet';
+    case 2
+        handles.colormap = 'HSV';
+    case 3
+        handles.colormap = 'Hot';
+    case 4
+        handles.colormap = 'Cool';
+end
+colormap(handles.colormap)
+guidata(hObject,handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function colorSelectPopMenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to colorSelectPopMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+handles.colormap = 'Jet';
+guidata(hObject,handles)
+
+
+% --- Executes on button press in exportPb.
+function exportPb_Callback(hObject, eventdata, handles)
+% hObject    handle to exportPb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[fname,path,index]=uiputfile({'*.jpg','JPEG Image (*.jpg)';
+                              '*.png','Portable Network Graphics (*.png)';
+                              '*.bmp','Bitmap File (*.bmp)'},'Save Graph');
+if all([fname,path,index])
+    name = strcat(path,fname);
+    if index==1
+        saveas(handles.axes3,name,'jpg')
+    elseif index==2
+        saveas(handles.axes3,name,'png')
+    elseif index==3
+        saveas(handles.axes3,name,'bmp')
+    end
+else
+    return
 end
 

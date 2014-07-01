@@ -23,7 +23,7 @@ function varargout = dataInput(varargin)
 
 % Edit the above text to modify the response to help dataInput
 
-% Last Modified by GUIDE v2.5 27-Jun-2014 08:45:37
+% Last Modified by GUIDE v2.5 01-Jul-2014 10:30:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -204,6 +204,13 @@ end
 function z0Box_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
+    if ~strcmp(get(handles.z1Box,'String'),'z1')
+        if handles.z1~=val
+            errordlg('Z values for plane must be equal!')
+            set(handles.z0Box,'String','z0')
+            return
+        end
+    end
     handles.z0 = val;
     guidata(hObject,handles)
 else
@@ -255,6 +262,13 @@ end
 function z1Box_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
+    if ~strcmp(get(handles.z1Box,'String'),'z0')
+        if handles.z0~=val
+            errordlg('Z values for plane must be equal!')
+            set(handles.z1Box,'String','z1')
+            return
+        end
+    end
     handles.z1 = val;
     guidata(hObject,handles)
 else

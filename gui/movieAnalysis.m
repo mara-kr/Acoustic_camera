@@ -22,7 +22,7 @@ function varargout = movieAnalysis(varargin)
 
 % Edit the above text to modify the response to help movieAnalysis
 
-% Last Modified by GUIDE v2.5 30-Jun-2014 13:24:28
+% Last Modified by GUIDE v2.5 01-Jul-2014 11:14:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -136,13 +136,32 @@ if isfield(handles,'fps')
         'Units','pixels','Position',[100,100,773,502]);
     colormap(handles.colormap)
     %width and height come from axes-Outerposition width+5,height-5
+    set(handles.doubleSpeedToggle,'Enable','off')
+    set(handles.halfSpeedToggle,'Enable','off')
+    set(handles.stopPb,'Enable','off')
+    set(handles.createMovPb,'Enable','off')
+    set(handles.rewindToggle,'Enable','off')
+    set(handles.playToggle,'Enable','off')
+    set(handles.exportPb,'Enable','off')
+    set(handles.newDataPb,'Enable','off')
     handles.frameLength = round(handles.fs/handles.fps);
     handles.movie = bmfPtsMovie(handles.pCrds,handles.signals,...
                                 handles.res,handles.micSep,...
                                 handles.aDims,handles.aCrds,handles.fs,...
                                 handles.temp,handles.frameLength);
+   nFrames = length(handles.movie);
+   frameTime = 1/handles.fps;
+   set(handles.totalTimeTxt,'String',num2str(nFrames*frameTime,4))
    guidata(hObject,handles)
    close(h)
+   set(handles.doubleSpeedToggle,'Enable','on')
+   set(handles.halfSpeedToggle,'Enable','on')
+   set(handles.stopPb,'Enable','on')
+   set(handles.createMovPb,'Enable','on')
+   set(handles.rewindToggle,'Enable','on')
+   set(handles.playToggle,'Enable','on')
+   set(handles.exportPb,'Enable','on')
+   set(handles.newDataPb,'Enable','on')
 else
     errordlg('Enter desired frames per second!')
 end
@@ -188,7 +207,7 @@ function playToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of playToggle
-if isfield(handles,'fps')
+if isfield(handles,'fps') && isfield(handles,'movie')
     nFrames = length(handles.movie);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
@@ -216,6 +235,9 @@ if isfield(handles,'fps')
     end
     if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
         handles.currentFrame = 1;
+        if get(handles.repeatToggle,'Value')
+            playToggle_Callback(hObject, eventdata, handles)
+        end
     end
     guidata(hObject,handles)
 elseif isfield(handles,'fps')
@@ -232,7 +254,7 @@ function doubleSpeedToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of doubleSpeedToggle
-if isfield(handles,'fps')
+if isfield(handles,'fps') && isfield(handles,'movie')
     nFrames = length(handles.movie);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
@@ -260,6 +282,9 @@ if isfield(handles,'fps')
     end
     if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
         handles.currentFrame = 1;
+        if get(handles.repeatToggle,'Value')
+            doubleSpeedToggle_Callback(hObject, eventdata, handles)
+        end
     end
     guidata(hObject,handles)
 elseif isfield(handles,'fps')
@@ -275,7 +300,7 @@ function halfSpeedToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of halfSpeedToggle
-if isfield(handles,'fps')
+if isfield(handles,'fps') && isfield(handles,'movie')
     nFrames = length(handles.movie);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
@@ -303,6 +328,9 @@ if isfield(handles,'fps')
     end
     if handles.currentFrame==(nFrames+1)%since loop increases it by 1 over
         handles.currentFrame = 1;
+        if get(handles.repeatToggle,'Value')
+            halfSpeedToggle_Callback(hObject, eventdata, handles)
+        end
     end
     guidata(hObject,handles)
 elseif isfield(handles,'fps')
@@ -331,7 +359,7 @@ function rewindToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of rewindToggle
-if isfield(handles,'fps')
+if isfield(handles,'fps') && isfield(handles,'movie')
     nFrames = length(handles.movie);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
@@ -365,4 +393,38 @@ elseif isfield(handles,'fps')
     errordlg('Need to create the movie before playing it!')
 else
     errordlg('Enter desired frames per second!')
+end
+
+
+% --- Executes on button press in repeatToggle.
+function repeatToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to repeatToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of repeatToggle
+if get(hObject,'Value')
+    set(hObject,'String','Repeat On')
+    set(hObject,'backg',[.4 .8 .6])
+else
+    set(hObject,'String','Repeat Off')
+    set(hObject,'backg',[.94 .94 .94])
+end
+
+
+% --- Executes on button press in exportPb.
+function exportPb_Callback(hObject, eventdata, handles)
+% hObject    handle to exportPb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if isfield(handles,'movie') && isfield(handles,'fps')
+    fname = inputdlg('Enter Filename without extension','Input');
+    name = strcat(fname,'.avi');
+    disp(name)%MOVIE2AVI DOESN'T TAKE name AS A FILENAME?????
+    movie2avi(handles.movie, 'newfile.avi','fps',handles.fps,...
+              'compression','None')
+elseif isfield(handles,'fps')
+    errordlg('Need to create movie before exporting it!')
+else
+    errordlg('Need to input desired frames per second!')
 end

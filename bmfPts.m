@@ -41,8 +41,8 @@ assert(ya>pCrds(1,2) && ya<pCrds(end,2))
 assert(za<pCrds(1,3))%plane of interest is in front of mic array
 plx = (pCrds(end,1)-pCrds(1,1))/xres + 1;
 ply = (pCrds(end,2)-pCrds(1,2))/yres + 1;
-assert(floor(plx)==plx)%iterating through x should hit start and end
-assert(floor(ply)==ply)%iterating through y should hit start and end
+%assert(floor(plx)==plx)%iterating through x should hit start and end
+%assert(floor(ply)==ply)%iterating through y should hit start and end
 powerLvls = zeros(ply,plx);%rows are y, cols are x (line 63 as well)
 
 for mic = 1:numMics%creates mCoords array
