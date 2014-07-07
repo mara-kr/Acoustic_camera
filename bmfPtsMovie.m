@@ -13,7 +13,7 @@ for  i = 1:nFrames
     end
     [~,avg] = bmfPts(pCrds,data,res,micSep,aDims,aCrds,fs,temp);
     surf(avg)
-    zlim([0,.05])
+    zlim([0,5])
     m(i) = getframe;
 end
 end
