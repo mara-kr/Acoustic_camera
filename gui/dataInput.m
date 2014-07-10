@@ -23,7 +23,7 @@ function varargout = dataInput(varargin)
 
 % Edit the above text to modify the response to help dataInput
 
-% Last Modified by GUIDE v2.5 01-Jul-2014 10:30:35
+% Last Modified by GUIDE v2.5 09-Jul-2014 16:58:44
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,106 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
+if exist('ndrqwertyuiop.mat','file')
+    state = load('ndrqwertyuiop.mat');
+    delete('ndrqwertyuiop.mat')
+    handles.micSep = state.handles.micSep;
+    set(handles.micSepBox,'String',handles.micSep)
+    handles.temp = state.handles.temp;
+    set(handles.tempBox,'String',handles.temp)
+    handles.fs = state.handles.fs;
+    set(handles.fsBox,'String',handles.fs)
+    handles.x0 = state.handles.pCrds(1,1);
+    set(handles.x0Box,'String',handles.x0)
+    handles.y0 = state.handles.pCrds(1,2);
+    set(handles.y0Box,'String',handles.y0)
+    handles.x1 = state.handles.pCrds(2,1);
+    set(handles.x1Box,'String',handles.x1)
+    handles.y1 = state.handles.pCrds(2,2);
+    set(handles.y1Box,'String',handles.y1)
+    handles.zp = state.handles.pCrds(1,3);
+    set(handles.zpBox,'String',handles.zp)
+    handles.arrayWidth = state.handles.aDims(1);
+    set(handles.arrayWidthBox,'String',handles.arrayWidth)
+    handles.arrayHeight = state.handles.aDims(2);
+    set(handles.arrayHeightBox,'String',handles.arrayHeight)
+    handles.xa = state.handles.aCrds(1);
+    set(handles.xaBox,'String',handles.xa)
+    handles.ya = state.handles.aCrds(2);
+    set(handles.yaBox,'String',handles.ya)
+    handles.za = state.handles.aCrds(3);
+    set(handles.zaBox,'String',handles.za)
+    handles.signals = state.handles.signals;
+    handles.xres = state.handles.res(1);
+    set(handles.xresBox,'String',handles.xres)
+    handles.yres = state.handles.res(2);
+    set(handles.yresBox,'String',handles.yres)
+    guidata(hObject,handles)
+end
+if exist('fromMicSelections.mat','file')
+    state = load('fromMicSelections.mat');
+    delete('fromMicSelections.mat')
+    handles.arrayHeight = state.handles.arrayHeight;%new arrayHeight/width
+    set(handles.arrayHeightBox,'String',handles.arrayHeight)
+    handles.arrayWidth = state.handles.arrayWidth;
+    set(handles.arrayWidthBox,'String',handles.arrayWidth)
+    handles.xa = state.handles.xa;%gives new xa coordinate
+    set(handles.xaBox,'String',handles.xa)
+    handles.ya = state.handles.ya;%gives new ya coordinate
+    set(handles.yaBox,'String',handles.ya)
+    handles.micSep = state.handles.micSep;
+    set(handles.micSepBox,'String',handles.micSep)
+    micIndexes = state.handles.micIndexes;
+    signals = state.handles.signals;
+    sampLength = size(signals,1);%num rows
+    data = zeros(sampLength,length(micIndexes));
+    for index=1:length(micIndexes)%creates new signals array
+        data(:,index) = signals(:,micIndexes(index));
+    end
+    handles.signals = data;
+    if isfield(state.handles,'temp')
+        handles.temp = state.handles.temp;
+        set(handles.tempBox,'String',handles.temp)
+    end
+    if isfield(state.handles,'fs')
+        handles.fs = state.handles.fs;
+        set(handles.fsBox,'String',handles.fs)
+    end
+    if isfield(state.handles,'x0')
+        handles.x0 = state.handles.x0;
+        set(handles.x0Box,'String',handles.x0)
+    end
+    if isfield(state.handles,'y0')
+        handles.y0 = state.handles.y0;
+        set(handles.y0Box,'String',handles.y0)
+    end
+    if isfield(state.handles,'x1')
+        handles.x1 = state.handles.x1;
+        set(handles.x1Box,'String',handles.x1)
+    end
+    if isfield(state.handles,'y1')
+        handles.y1 = state.handles.y1;
+        set(handles.y1Box,'String',handles.y1)
+    end
+    if isfield(state.handles,'zp')
+        handles.zp = state.handles.zp;
+        set(handles.zpBox,'String',handles.zp)
+    end
+    if isfield(state.handles,'za')
+        handles.za = state.handles.za;
+        set(handles.zaBox,'String',handles.za)
+    end
+    if isfield(state.handles,'xres')
+        handles.xres = state.handles.xres;
+        set(handles.xresBox,'String',handles.xres)
+    end
+    if isfield(state.handles,'yres')
+        handles.yres = state.handles.yres;
+        set(handles.yresBox,'String',handles.yres)
+    end
+    guidata(hObject,handles)
+end
+    
 % UIWAIT makes dataInput wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -91,7 +190,6 @@ function micSepBox_CreateFcn(hObject, eventdata, handles) %#ok<*DEFNU>
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function tempBox_Callback(hObject, eventdata, handles)
@@ -128,7 +226,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
 function arrayWidthBox_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
@@ -144,7 +241,6 @@ function arrayWidthBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function arrayHeightBox_Callback(hObject, eventdata, handles)
@@ -164,7 +260,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
 function x0Box_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
@@ -180,7 +275,6 @@ function x0Box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function y0Box_Callback(hObject, eventdata, handles)
@@ -200,31 +294,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-function z0Box_Callback(hObject, eventdata, handles)
-val = str2double(get(hObject,'String'));
-if ~isnan(val)
-    if ~strcmp(get(handles.z1Box,'String'),'z1')
-        if handles.z1~=val
-            errordlg('Z values for plane must be equal!')
-            set(handles.z0Box,'String','z0')
-            return
-        end
-    end
-    handles.z0 = val;
-    guidata(hObject,handles)
-else
-    errordlg('Input must be an integer')
-    set(handles.z0Box,'String','z0')
-end
-
-function z0Box_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
 function x1Box_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
@@ -235,11 +304,11 @@ else
     set(handles.x1Box,'String','x1')
 end
 
+
 function x1Box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function y1Box_Callback(hObject, eventdata, handles)
@@ -252,31 +321,25 @@ else
     set(handles.y1Box,'String','y1')
 end
 
+
 function y1Box_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
 
 
-
-function z1Box_Callback(hObject, eventdata, handles)
+function zpBox_Callback(hObject, eventdata, handles)
 val = str2double(get(hObject,'String'));
 if ~isnan(val)
-    if ~strcmp(get(handles.z1Box,'String'),'z0')
-        if handles.z0~=val
-            errordlg('Z values for plane must be equal!')
-            set(handles.z1Box,'String','z1')
-            return
-        end
-    end
-    handles.z1 = val;
+    handles.zp = val;
     guidata(hObject,handles)
 else
     errordlg('Input must be an integer')
-    set(handles.z1Box,'String','z1')
+    set(handles.z1Box,'String','zp')
 end
 
-function z1Box_CreateFcn(hObject, eventdata, handles)
+
+function zpBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -326,11 +389,11 @@ else
     set(handles.zaBox,'String','za')
 end
 
+
 function zaBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function xresBox_Callback(hObject, eventdata, handles)
@@ -343,11 +406,11 @@ else
     set(handles.xresBox,'String','xres')
 end
 
+
 function xresBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function yresBox_Callback(hObject, eventdata, handles)
@@ -360,6 +423,7 @@ else
     set(handles.yresBox,'String','yres')
 end
 
+
 function yresBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -368,7 +432,7 @@ end
 
 % --- Executes on button press in toPanButton.
 function toPanButton_Callback(hObject, ~, handles)
-if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
+if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres','signals'})
     if length(handles.signals)>150000
@@ -379,16 +443,16 @@ if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
             return;
         end
     end
-    handles.pCrds = [handles.x0,handles.y0,handles.z0;...
-        handles.x1,handles.y1,handles.z1];
+    handles.pCrds = [handles.x0,handles.y0,handles.zp;...
+        handles.x1,handles.y1,handles.zp];
     handles.aCrds = [handles.xa,handles.ya,handles.za];
     handles.aDims = [handles.arrayWidth,handles.arrayHeight];
     handles.res = [handles.xres,handles.yres];
     guidata(hObject,handles)
-    save('handles.mat','handles')
+    save('ndrqwertyuiop.mat','handles')
     close(gcf)
     graphAnalysis
-elseif isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
+elseif isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres'})
     errordlg('Need to load mic data!')
@@ -397,38 +461,42 @@ else
 end
 
 % --- Executes on button press in ldMicData.
-function ldMicData_Callback(hObject, eventdata, handles) 
-dlg = strcat('Is the mic data in the form [mic1,mic2,mic3...], where',...
-             ' mic1 is the bottom left mic (when facing source),',...
-             ' mic2 is to the right of mic1,etc, and the top right',...
-             ' mic is the last in the array? (if not, you will be',...
-             ' prompted to remake the array by selecting signals)');
-selection = questdlg(dlg,'Mic Data Warning','Yes','No','Yes');
-if strcmp(selection,'Yes')
+function ldMicData_Callback(hObject, eventdata, handles)
+if isfield(handles,'signals')
+    answer = questdlg('Signals data already exists. Overwrite?',...
+                      'Overwrite?','Yes','No','No');
+    if strcmp(answer,'No')
+        return
+    elseif strcmp(answer,'')%user closed dlg box
+        return
+    end
+end
+dlg = strcat('Load mic data from signals variable inside .mat file,',...
+             ' or load data from an Audacity export?');
+selection = questdlg(dlg,'Load Mic Data','.mat File','Audacity export',...
+                     '.mat File');
+if strcmp(selection,'.mat File')
     %signals array variable should be called signals!
     [fname,path] = uigetfile('.mat');
     if fname~=0
         ld = load(strcat(path,fname));
         if isfield(ld,'signals')
             handles.signals = ld.signals;
+            guidata(hObject,handles)
         else
             errordlg('Mic Data must be stored in variable called signals!')
         end
     else
         return
     end
-else
-    if isfield(handles,{'arrayWidth','arrayHeight'})
-        numMic = handles.arrayWidth*handles.arrayHeight;
-        x = selectMicData(numMic);
-        if ~isempty(x)
-            handles.signals = x;
-        end
-    else
-        errordlg('Must set array dimensions before selecting data!')
+elseif strcmp(selection,'Audacity export')
+    handles.signals = importMics();
+    if handles.signals~=0%importMics didn't return prematurely
+        guidata(hObject,handles)
     end
+else
+    return
 end
-guidata(hObject,handles)
 
 
 % --- Executes on button press in savePb.
@@ -442,17 +510,14 @@ end
 if isfield(handles,'y0')
     state.y0 = handles.y0;
 end
-if isfield(handles,'z0')
-    state.z0 = handles.z0;
-end
 if isfield(handles,'x1')
     state.x1 = handles.x1;
 end
 if isfield(handles,'y1')
     state.y1 = handles.y1;
 end
-if isfield(handles,'z1')
-    state.z1 = handles.z1;
+if isfield(handles,'zp')
+    state.zp = handles.zp;
 end
 if isfield(handles,'micSep')
     state.micSep = handles.micSep;
@@ -537,10 +602,6 @@ if isfield(old.state,'y0')
     set(handles.y0Box,'String',old.state.y0)
     handles.y0 = old.state.y0;
 end
-if isfield(old.state,'z0')
-    set(handles.z0Box,'String',old.state.z0)
-    handles.z0 = old.state.z0;
-end
 if isfield(old.state,'x1')
     set(handles.x1Box,'String',old.state.x1)
     handles.x1 = old.state.x1;
@@ -549,9 +610,9 @@ if isfield(old.state,'y1')
     set(handles.y1Box,'String',old.state.y1)
     handles.y1 = old.state.y1;
 end
-if isfield(old.state,'z1')
-    set(handles.z1Box,'String',old.state.z1)
-    handles.z1 = old.state.z1;
+if isfield(old.state,'zp')
+    set(handles.zpBox,'String',old.state.zp)
+    handles.zp = old.state.zp;
 end
 if isfield(old.state,'xa')
     set(handles.xaBox,'String',old.state.xa)
@@ -579,14 +640,12 @@ end
 guidata(hObject,handles)
 
 
-
-
 % --- Executes on button press in toMoviePb.
 function toMoviePb_Callback(hObject, eventdata, handles)
 % hObject    handle to toMoviePb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
+if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres','signals'})
     if length(handles.signals)<handles.fs
@@ -597,19 +656,73 @@ if isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
             return;
         end
     end
-    handles.pCrds = [handles.x0,handles.y0,handles.z0;...
-        handles.x1,handles.y1,handles.z1];
+    handles.pCrds = [handles.x0,handles.y0,handles.zp;...
+        handles.x1,handles.y1,handles.zp];
     handles.aCrds = [handles.xa,handles.ya,handles.za];
     handles.aDims = [handles.arrayWidth,handles.arrayHeight];
     handles.res = [handles.xres,handles.yres];
     guidata(hObject,handles)
-    save('handles.mat','handles')
+    save('ndrqwertyuiop.mat','handles')%avoid namespace error
     close(gcf)
     movieAnalysis;
-elseif isfield(handles,{'x0','y0','z0','x1','y1','z1','xa','ya','za',...
+elseif isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres'})
     errordlg('Need to load mic data!')
 else
     errordlg('Need to input all variables!')
+end
+
+
+% --- Executes on button press in micSelectPb.
+function micSelectPb_Callback(hObject, eventdata, handles)
+% hObject    handle to micSelectPb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if isfield(handles,{'xa','ya','micSep','arrayWidth','arrayHeight','signals'})
+    if isfield(handles,'x0')
+        state.x0 = handles.x0;
+    end
+    if isfield(handles,'y0')
+        state.y0 = handles.y0;
+    end
+    if isfield(handles,'x1')
+        state.x1 = handles.x1;
+    end
+    if isfield(handles,'y1')
+        state.y1 = handles.y1;
+    end
+    if isfield(handles,'zp')
+        state.zp = handles.zp;
+    end
+    if isfield(handles,'temp')
+        state.temp = handles.temp;
+    end
+    if isfield(handles,'fs')
+        state.fs = handles.fs;
+    end
+    if isfield(handles,'xres')
+        state.xres = handles.xres;
+    end
+    if isfield(handles,'yres')
+        state.yres = handles.yres;
+    end
+    if isfield(handles,'za')
+        state.za = handles.za;
+    end
+    state.micSep = handles.micSep;
+    state.arrayWidth = handles.arrayWidth;
+    state.arrayHeight = handles.arrayHeight;
+    if state.arrayWidth~=6 || state.arrayHeight~=5
+        errordlg('Must have a 6x5 array to use this tool!')
+        return
+    end
+    state.xa = handles.xa;
+    state.ya = handles.ya;
+    state.signals = handles.signals; %#ok<STRNU>
+    save('toMicSelections.mat','state')
+    close(gcf)
+    micSelect
+else
+    errordlg('Need to enter xa, ya, micSep, array width/height, and signals!')
 end

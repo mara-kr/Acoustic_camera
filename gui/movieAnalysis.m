@@ -22,7 +22,7 @@ function varargout = movieAnalysis(varargin)
 
 % Edit the above text to modify the response to help movieAnalysis
 
-% Last Modified by GUIDE v2.5 01-Jul-2014 11:14:01
+% Last Modified by GUIDE v2.5 10-Jul-2014 13:35:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,8 +57,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-original = load('handles.mat');
-delete('handles.mat')
+original = load('ndrqwertyuiop.mat');
+delete('ndrqwertyuiop.mat')
 handles.res = original.handles.res;
 handles.micSep = original.handles.micSep;
 handles.temp = original.handles.temp;
@@ -116,13 +116,16 @@ function newDataPb_Callback(hObject, eventdata, handles)
 % hObject    handle to newDataPb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-selection = questdlg('Are you sure? This will clear everything.',...
-                     'Select new data','Yes','No','No');
+selection = questdlg('Keep Variable State?');
 if strcmp(selection,'No')
-    return;
-else
     delete(gcf)
     dataInput
+elseif strcmp(selection,'Yes')
+    save('ndrqwertyuiop.mat','handles')%avoids namespace error
+    delete(gcf)
+    dataInput
+else %canceled or figure closed
+    return 
 end
 
 
@@ -132,9 +135,9 @@ function createMovPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,'fps')
-    h = figure('Renderer','zbuffer','NextPlot','replacechildren',...
-        'Units','pixels','Position',[100,100,773,502]);
-    colormap(handles.colormap)
+    %h = figure('Renderer','zbuffer','NextPlot','replacechildren',...
+    %    'Units','pixels','Position',[100,100,773,502]);
+    %colormap(handles.colormap)
     %width and height come from axes-Outerposition width+5,height-5
     set(handles.doubleSpeedToggle,'Enable','off')
     set(handles.halfSpeedToggle,'Enable','off')
@@ -149,11 +152,22 @@ if isfield(handles,'fps')
                                 handles.res,handles.micSep,...
                                 handles.aDims,handles.aCrds,handles.fs,...
                                 handles.temp,handles.frameLength);
-   nFrames = length(handles.movie);
+   numMics = size(handles.signals,2);
+   if numMics<6
+       handles.zlim = .05;
+   elseif numMics>6 && numMics<=10
+       handles.zlim = .07;
+   elseif numMics>10 && numMics<=14
+       handles.zlim = .1;
+   elseif numMics>14 && numMics<=22
+       handles.zlim = .4;
+   else
+       handles.zlim = .6;
+   end
+   nFrames = size(handles.movie,3);
    frameTime = 1/handles.fps;
-   set(handles.totalTimeTxt,'String',num2str(nFrames*frameTime,4))
+   set(handles.totalTimeTxt,'String',num2str(nFrames*frameTime,3))
    guidata(hObject,handles)
-   close(h)
    set(handles.doubleSpeedToggle,'Enable','on')
    set(handles.halfSpeedToggle,'Enable','on')
    set(handles.stopPb,'Enable','on')
@@ -208,7 +222,7 @@ function playToggle_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of playToggle
 if isfield(handles,'fps') && isfield(handles,'movie')
-    nFrames = length(handles.movie);
+    nFrames = size(handles.movie,3);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
         set(hObject,'String','Pause')
@@ -217,6 +231,8 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','off')
         set(handles.createMovPb,'Enable','off')
         set(handles.rewindToggle,'Enable','off')
+        set(handles.colormapSelectPopUp,'Enable','off')
+        set(handles.graphTypePopup,'Enable','off')
     else
         set(hObject,'String','Play')
         set(handles.doubleSpeedToggle,'Enable','on')
@@ -224,10 +240,18 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','on')
         set(handles.createMovPb,'Enable','on')
         set(handles.rewindToggle,'Enable','on')
+        set(handles.colormapSelectPopUp,'Enable','on')
+        set(handles.graphTypePopup,'Enable','on')
     end
     while get(hObject,'Value') && handles.currentFrame<=nFrames
-        x = frame2im(handles.movie(handles.currentFrame));
-        image(x);
+        data = cell2mat(handles.movie(:,:,handles.currentFrame));
+        if strcmp(handles.graphType,'Surf')
+            surf(data)
+            zlim([0,handles.zlim])
+        else
+            contour(data)
+        end
+        colormap(handles.colormap)
         time = num2str(frameTime*handles.currentFrame,3);
         set(handles.timeStamp,'String',time)
         pause(frameTime)
@@ -255,7 +279,7 @@ function doubleSpeedToggle_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of doubleSpeedToggle
 if isfield(handles,'fps') && isfield(handles,'movie')
-    nFrames = length(handles.movie);
+    nFrames = size(handles.movie,3);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
         set(hObject,'String','Pause')
@@ -264,6 +288,8 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','off')
         set(handles.createMovPb,'Enable','off')
         set(handles.rewindToggle,'Enable','off')
+        set(handles.colormapSelectPopUp,'Enable','off')
+        set(handles.graphTypePopup,'Enable','off')
     else
         set(hObject,'String','Play 2x Speed')
         set(handles.playToggle,'Enable','on')
@@ -271,10 +297,18 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','on')
         set(handles.createMovPb,'Enable','on')
         set(handles.rewindToggle,'Enable','on')
+        set(handles.colormapSelectPopUp,'Enable','on')
+        set(handles.graphTypePopup,'Enable','on')
     end
     while get(hObject,'Value') && handles.currentFrame<=nFrames
-        x = frame2im(handles.movie(handles.currentFrame));
-        image(x);
+        data = cell2mat(handles.movie(:,:,handles.currentFrame));
+        if strcmp(handles.graphType,'Surf')
+            surf(data)
+            zlim([0,handles.zlim])
+        else
+            contour(data)
+        end
+        colormap(handles.colormap)
         time = num2str(frameTime*handles.currentFrame,3);
         set(handles.timeStamp,'String',time)
         pause(frameTime/2)
@@ -301,7 +335,7 @@ function halfSpeedToggle_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of halfSpeedToggle
 if isfield(handles,'fps') && isfield(handles,'movie')
-    nFrames = length(handles.movie);
+    nFrames = size(handles.movie,3);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
         set(hObject,'String','Pause')
@@ -310,6 +344,8 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','off')
         set(handles.createMovPb,'Enable','off')
         set(handles.rewindToggle,'Enable','off')
+        set(handles.colormapSelectPopUp,'Enable','off')
+        set(handles.graphTypePopup,'Enable','off')
     else
         set(hObject,'String','Play 1/2 Speed')
         set(handles.playToggle,'Enable','on')
@@ -317,10 +353,18 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','on')
         set(handles.createMovPb,'Enable','on')
         set(handles.rewindToggle,'Enable','on')
+        set(handles.colormapSelectPopUp,'Enable','on')
+        set(handles.graphTypePopup,'Enable','on')
     end
     while get(hObject,'Value') && handles.currentFrame<=nFrames
-        x = frame2im(handles.movie(handles.currentFrame));
-        image(x);
+        data = cell2mat(handles.movie(:,:,handles.currentFrame));
+        if strcmp(handles.graphType,'Surf')
+            surf(data)
+            zlim([0,handles.zlim])
+        else
+            contour(data)
+        end
+        colormap(handles.colormap)
         time = num2str(frameTime*handles.currentFrame,3);
         set(handles.timeStamp,'String',time)
         pause(frameTime*2)
@@ -360,7 +404,7 @@ function rewindToggle_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of rewindToggle
 if isfield(handles,'fps') && isfield(handles,'movie')
-    nFrames = length(handles.movie);
+    nFrames = size(handles.movie,3);
     frameTime = 1/handles.fps;
     if get(hObject,'Value')
         set(hObject,'String','Rewinding')
@@ -369,6 +413,8 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.stopPb,'Enable','off')
         set(handles.halfSpeedToggle,'Enable','off')
         set(handles.createMovPb,'Enable','off')
+        set(handles.colormapSelectPopUp,'Enable','off')
+        set(handles.graphTypePopup,'Enable','off')
     else
         set(hObject,'String','Rewind')
         set(handles.playToggle,'Enable','on')
@@ -376,10 +422,18 @@ if isfield(handles,'fps') && isfield(handles,'movie')
         set(handles.halfSpeedToggle,'Enable','on')
         set(handles.stopPb,'Enable','on')
         set(handles.createMovPb,'Enable','on')
+        set(handles.colormapSelectPopUp,'Enable','on')
+        set(handles.graphTypePopup,'Enable','on')
     end
     while get(hObject,'Value') && handles.currentFrame>1
-        x = frame2im(handles.movie(handles.currentFrame));
-        image(x);
+        data = cell2mat(handles.movie(:,:,handles.currentFrame));
+        if strcmp(handles.graphType,'Surf')
+            surf(data)
+            zlim([0,handles.zlim])
+        else
+            contour(data)
+        end
+        colormap(handles.colormap)
         time = num2str(frameTime*handles.currentFrame,3);
         set(handles.timeStamp,'String',time)
         pause(frameTime)
@@ -418,13 +472,41 @@ function exportPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,'movie') && isfield(handles,'fps')
-    fname = inputdlg('Enter Filename without extension','Input');
-    name = strcat(fname,'.avi');
-    disp(name)%MOVIE2AVI DOESN'T TAKE name AS A FILENAME?????
-    movie2avi(handles.movie, 'newfile.avi','fps',handles.fps,...
+    [fname,path] = uiputfile('*.avi');
+    if isempty(fname)
+        return
+    end
+    name = strcat(path,fname);
+    movie2avi(handles.movie, name, 'fps', handles.fps,...
               'compression','None')
 elseif isfield(handles,'fps')
     errordlg('Need to create movie before exporting it!')
 else
     errordlg('Need to input desired frames per second!')
 end
+
+% --- Executes on selection change in graphTypePopup.
+function graphTypePopup_Callback(hObject, eventdata, handles)
+% hObject    handle to graphTypePopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if get(hObject,'Value') == 1
+    handles.graphType = 'Contour';
+elseif get(hObject,'Value') == 2
+    handles.graphType = 'Surf';
+end
+guidata(hObject,handles)
+
+% --- Executes during object creation, after setting all properties.
+function graphTypePopup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to graphTypePopup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+handles.graphType = 'Contour';
+guidata(hObject,handles)

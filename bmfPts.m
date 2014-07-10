@@ -26,23 +26,21 @@ yres = res(2);
 zp = pCrds(1,3);
 arrayWidth = aDims(1);
 arrayHeight = aDims(2);
-vs = speedSound(temp,'in/s');
-numMics = arrayWidth*arrayHeight;
+vs = round((20.0457*(((temp-32)/1.8)+273.15).^.5)*39.37*100)/100;%inches/s
 xa = aCrds(1);
 ya = aCrds(2);
 za = aCrds(3);
 sampLength = length(signals(:,1));
+numMics = arrayWidth*arrayHeight;
 mCrds = zeros(numMics,3);%coordinates of each mic
 
 %creates size of powerLvls array, so it doesn't keep changing size
 assert(pCrds(1,3)==pCrds(2,3))
-assert(xa>pCrds(1,1) && xa<pCrds(end,1))%mic array must be inside plane
-assert(ya>pCrds(1,2) && ya<pCrds(end,2))
+assert(xa>=pCrds(1,1) && xa<=pCrds(end,1))%mic array must be inside plane
+assert(ya>=pCrds(1,2) && ya<=pCrds(end,2))
 assert(za<pCrds(1,3))%plane of interest is in front of mic array
-plx = (pCrds(end,1)-pCrds(1,1))/xres + 1;
-ply = (pCrds(end,2)-pCrds(1,2))/yres + 1;
-%assert(floor(plx)==plx)%iterating through x should hit start and end
-%assert(floor(ply)==ply)%iterating through y should hit start and end
+plx = floor((pCrds(end,1)-pCrds(1,1))/xres) + 1;%must be int
+ply = floor((pCrds(end,2)-pCrds(1,2))/yres) + 1;
 powerLvls = zeros(ply,plx);%rows are y, cols are x (line 63 as well)
 
 for mic = 1:numMics%creates mCoords array
@@ -64,7 +62,7 @@ for xp=pCrds(1,1):xres:pCrds(end,1)
             midDist = ((xp-xmid)^2+(yp-ymid)^2 + zd)^.5;
             delay = round(coef*(dist-midDist));
             silence = zeros(abs(delay),1);
-            if delay <= 0%is there a way to not make mDSilence
+            if delay <= 0
                 mDSilence = vertcat(silence,signals(:,mic));
                 micDelayed = mDSilence(1:sampLength);
             else
@@ -95,4 +93,3 @@ end
 
 [row,col] = find(max(max(powerLvls))==powerLvls);
 end
-

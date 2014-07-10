@@ -22,7 +22,7 @@ function varargout = graphAnalysis(varargin)
 
 % Edit the above text to modify the response to help graphAnalysis
 
-% Last Modified by GUIDE v2.5 01-Jul-2014 10:45:26
+% Last Modified by GUIDE v2.5 10-Jul-2014 13:51:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,8 +56,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-original = load('handles.mat');
-delete('handles.mat')
+original = load('ndrqwertyuiop.mat');
+delete('ndrqwertyuiop.mat')
 handles.res = original.handles.res;
 handles.micSep = original.handles.micSep;
 handles.temp = original.handles.temp;
@@ -306,13 +306,16 @@ function newDataPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %disp(handles.original.handles)
-selection = questdlg('Are you sure? This will clear everything.',...
-                     'Select new data','Yes','No','No');
+selection = questdlg('Keep Variable State?');
 if strcmp(selection,'No')
-    return;
-else
     delete(gcf)
     dataInput
+elseif strcmp(selection,'Yes')
+    save('ndrqwertyuiop.mat','handles')%avoids namespace error
+    delete(gcf)
+    dataInput
+else %canceled or figure closed
+    return 
 end
 
 
@@ -371,4 +374,3 @@ if all([fname,path,index])
 else
     return
 end
-
