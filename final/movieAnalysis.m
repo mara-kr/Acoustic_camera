@@ -476,8 +476,22 @@ if isfield(handles,'movie') && isfield(handles,'fps')
     if isempty(fname)
         return
     end
+    frameLength = handles.fs/handles.fps;
+    nFrames = ceil(length(handles.signals(:,1))/frameLength);
+    m = struct('cdata', cell(1,nFrames), 'colormap', cell(1,nFrames));
+    for frame=1:nFrames
+        data = cell2mat(handles.movie(:,:,frame));
+        if strcmp(handles.graphType,'Surf')
+            surf(data)
+            zlim([0,handles.zlim])
+        else
+            contour(data)
+        end
+        colormap(handles.colormap)
+        m(frame) = getframe;
+    end
     name = strcat(path,fname);
-    movie2avi(handles.movie, name, 'fps', handles.fps,...
+    movie2avi(m, name, 'fps', handles.fps,...
               'compression','None')
 elseif isfield(handles,'fps')
     errordlg('Need to create movie before exporting it!')

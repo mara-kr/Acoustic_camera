@@ -424,7 +424,7 @@ else
 end
 
 
-function yresBox_CreateFcn(hObject, eventdata, handles)
+function yresBox_CreateFcn(hObject, eventdata, handles) %#ok<*INUSD>
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -553,9 +553,9 @@ if isfield(handles,'signals')
     state.signals = handles.signals;  %#ok<STRNU>
 end
 if exist('state') %#ok<EXIST>
-    fname = inputdlg('Enter filename','Save State');
-    if ischar(fname{1})
-        save(strcat(fname{1},'.mat'),'state')
+    [fname,path] = uiputfile('*.mat');
+    if ~isempty(fname)
+        save(strcat(path,fname),'state')
     else
         return
     end
@@ -675,7 +675,7 @@ end
 
 
 % --- Executes on button press in micSelectPb.
-function micSelectPb_Callback(hObject, eventdata, handles)
+function micSelectPb_Callback(hObject, eventdata, handles) %#ok<*INUSL>
 % hObject    handle to micSelectPb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -713,7 +713,7 @@ if isfield(handles,{'xa','ya','micSep','arrayWidth','arrayHeight','signals'})
     state.micSep = handles.micSep;
     state.arrayWidth = handles.arrayWidth;
     state.arrayHeight = handles.arrayHeight;
-    if state.arrayWidth~=6 || state.arrayHeight~=5
+    if state.arrayWidth~=6 || state.arrayHeight~=5 || size(handles.signals,2)~=30
         errordlg('Must have a 6x5 array to use this tool!')
         return
     end
