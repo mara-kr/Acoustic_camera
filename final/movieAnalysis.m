@@ -116,7 +116,8 @@ function newDataPb_Callback(hObject, eventdata, handles)
 % hObject    handle to newDataPb (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-selection = questdlg('Keep Variable State?');
+selection = questdlg('Keep Variable State?','Select New Data',...
+                     'Yes','No','Yes');
 if strcmp(selection,'No')
     delete(gcf)
     dataInput
@@ -124,7 +125,7 @@ elseif strcmp(selection,'Yes')
     save('ndrqwertyuiop.mat','handles')%avoids namespace error
     delete(gcf)
     dataInput
-else %canceled or figure closed
+else %figure closed
     return 
 end
 
@@ -473,7 +474,7 @@ function exportPb_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,'movie') && isfield(handles,'fps')
     [fname,path] = uiputfile('*.avi');
-    if isempty(fname)
+    if fname==0
         return
     end
     frameLength = handles.fs/handles.fps;

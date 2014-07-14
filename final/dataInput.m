@@ -491,7 +491,9 @@ if strcmp(selection,'.mat File')
     end
 elseif strcmp(selection,'Audacity export')
     handles.signals = importMics();
-    if handles.signals~=0%importMics didn't return prematurely
+    disp(size(handles.signals))
+    if size(handles.signals)~=[1,1]%importMics didn't return prematurely
+        disp('red')
         guidata(hObject,handles)
     end
 else

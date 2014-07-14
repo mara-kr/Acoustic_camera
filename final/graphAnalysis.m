@@ -306,7 +306,8 @@ function newDataPb_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %disp(handles.original.handles)
-selection = questdlg('Keep Variable State?');
+selection = questdlg('Keep Variable State?','Select New Data',...
+                     'Yes','No','Yes');
 if strcmp(selection,'No')
     delete(gcf)
     dataInput
@@ -314,7 +315,7 @@ elseif strcmp(selection,'Yes')
     save('ndrqwertyuiop.mat','handles')%avoids namespace error
     delete(gcf)
     dataInput
-else %canceled or figure closed
+else %figure closed
     return 
 end
 
