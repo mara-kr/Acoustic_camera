@@ -46,15 +46,7 @@ end
 
 % --- Executes just before micSelect is made visible.
 function micSelect_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to micSelect (see VARARGIN)
-
-% Choose default command line output for micSelect
 handles.output = hObject;
-% Update handles structure
 handles.m1 = 0;
 handles.m2 = 0;
 handles.m3 = 0;
@@ -129,12 +121,6 @@ delete('toMicSelections.mat')
 
 % --- Outputs from this function are returned to the command line.
 function varargout = micSelect_OutputFcn(hObject, eventdata, handles) 
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
 varargout{1} = handles.output;
 
 

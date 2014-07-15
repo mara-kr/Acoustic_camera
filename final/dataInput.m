@@ -47,17 +47,7 @@ end
 
 % --- Executes just before dataInput is made visible.
 function dataInput_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   unrecognized PropertyName/PropertyValue pairs from the
-%            command line (see VARARGIN)
-
-% Choose default command line output for dataInput
 handles.output = hObject;
-
-% Update handles structure
 guidata(hObject, handles);
 if exist('ndrqwertyuiop.mat','file')
     state = load('ndrqwertyuiop.mat');
@@ -158,19 +148,10 @@ if exist('fromMicSelections.mat','file')
     end
     guidata(hObject,handles)
 end
-    
-% UIWAIT makes dataInput wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
 function varargout = dataInput_OutputFcn(hObject, eventdata, handles)
-% varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Get default command line output from handles structure
 varargout{1} = handles.output;
 
 
@@ -435,6 +416,13 @@ function toPanButton_Callback(hObject, ~, handles)
 if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres','signals'})
+    if xa<x0 || xa>x1
+        errordlg('Xa must be between x0 and x1 (inclusive)!')
+        return
+    end
+    if ya<y0 || ya>y1
+        errordlg('Ya must be between y0 and y1 (inclusive)!')
+    end
     if length(handles.signals)>150000
         dlg=strcat('Signals are over 150k samples. Processing will',...
                    ' be long for panning. Do you want to continue?');
@@ -503,9 +491,6 @@ end
 
 % --- Executes on button press in savePb.
 function savePb_Callback(hObject, eventdata, handles)%saves in working dir
-% hObject    handle to savePb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,'x0')
     state.x0 = handles.x0;
 end
@@ -567,9 +552,6 @@ end
 
 % --- Executes on button press in loadPb.
 function loadPb_Callback(hObject, eventdata, handles)
-% hObject    handle to loadPb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 [fname,path] = uigetfile('.mat');
 if fname~=0
     old = load(strcat(path,fname));
@@ -644,12 +626,20 @@ guidata(hObject,handles)
 
 % --- Executes on button press in toMoviePb.
 function toMoviePb_Callback(hObject, eventdata, handles)
-% hObject    handle to toMoviePb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres','signals'})
+    if handles.za>=handles.zp
+        errordlg('Za must be less than zp!')
+        return
+    end
+    if xa<x0 || xa>x1
+        errordlg('Xa must be between x0 and x1 (inclusive)!')
+        return
+    end
+    if ya<y0 || ya>y1
+        errordlg('Ya must be between y0 and y1 (inclusive)!')
+    end
     if length(handles.signals)<handles.fs
         dlg=strcat('Signals are under one second. Longer movies are',...
                    ' usually more meaningful. Do you want to continue?');
@@ -678,9 +668,6 @@ end
 
 % --- Executes on button press in micSelectPb.
 function micSelectPb_Callback(hObject, eventdata, handles) %#ok<*INUSL>
-% hObject    handle to micSelectPb (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 if isfield(handles,{'xa','ya','micSep','arrayWidth','arrayHeight','signals'})
     if isfield(handles,'x0')
         state.x0 = handles.x0;

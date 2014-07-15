@@ -1,6 +1,7 @@
 function [m] = bmfPtsMovie(pCrds,signals,res,micSep,aDims,aCrds,fs,...
                            temp,frameLength)
-%bmfPtsMovie creates data for movie with each frame using frameLength samples
+%bmfPtsMovie creates data for movie with each frame using frameLength
+%samples
 nFrames = ceil(length(signals(:,1))/frameLength);
 h = waitbar(1/nFrames,'Creating Movie...');
 data = signals(1:frameLength,:);

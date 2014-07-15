@@ -22,10 +22,10 @@ else
         'm-05.wav';'m-06.wav';'m-07.wav';'m-08.wav';'m-09.wav';...
         'm-10.wav';'m-11.wav';'m-12.wav';'m-13.wav';'m-14.wav'};
 end
-sigLen = length(wavread(strcat(dir,'m-15.wav')));
+sigLen = length(audioread(strcat(dir,'m-15.wav')));
 signals = zeros(sigLen,30);
 for i=1:length(names)
-    signals(:,i) = wavread(strcat(dir,names{i}));
+    signals(:,i) = audioread(strcat(dir,names{i}));
 end
 [fname,path] = uiputfile('*.mat','Save As');
 if fname==0 %user canceled dlg
