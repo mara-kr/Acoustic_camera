@@ -416,11 +416,11 @@ function toPanButton_Callback(hObject, ~, handles)
 if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
                     'micSep','temp','fs','arrayWidth','arrayHeight',...
                     'xres','yres','signals'})
-    if xa<x0 || xa>x1
+    if handles.xa<handles.x0 || handles.xa>handles.x1
         errordlg('Xa must be between x0 and x1 (inclusive)!')
         return
     end
-    if ya<y0 || ya>y1
+    if handles.ya<handles.y0 || handles.ya>handles.y1
         errordlg('Ya must be between y0 and y1 (inclusive)!')
     end
     if length(handles.signals)>150000
@@ -479,9 +479,7 @@ if strcmp(selection,'.mat File')
     end
 elseif strcmp(selection,'Audacity export')
     handles.signals = importMics();
-    disp(size(handles.signals))
     if size(handles.signals)~=[1,1]%importMics didn't return prematurely
-        disp('red')
         guidata(hObject,handles)
     end
 else
@@ -633,11 +631,11 @@ if isfield(handles,{'x0','y0','x1','y1','zp','xa','ya','za',...
         errordlg('Za must be less than zp!')
         return
     end
-    if xa<x0 || xa>x1
+    if handles.xa<handles.x0 || handles.xa>handles.x1
         errordlg('Xa must be between x0 and x1 (inclusive)!')
         return
     end
-    if ya<y0 || ya>y1
+    if handles.ya<handles.y0 || handles.ya>handles.y1
         errordlg('Ya must be between y0 and y1 (inclusive)!')
     end
     if length(handles.signals)<handles.fs

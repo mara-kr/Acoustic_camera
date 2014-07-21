@@ -135,7 +135,7 @@ if isfield(handles,'fps')
    elseif numMics>14 && numMics<=22
        handles.zlim = .4;
    else
-       handles.zlim = .6;
+       handles.zlim = 4;
    end
    nFrames = size(handles.movie,3);
    frameTime = 1/handles.fps;
